@@ -67,5 +67,8 @@ public:
 
 		HRESULT swapChainResult = pDxgiFactory->CreateSwapChainForHwnd(pD3DDevice.Get(),
 			*parentWindowHandler, &swapChainDescription, nullptr, nullptr, &pD3DSwapChain);
+
+		ID3D11Texture2D* backBuffer;
+		pD3DSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
 	}
 };
