@@ -23,12 +23,12 @@
     <ClCompile Include="CBaseWindow.cpp">
       <Filter>Plotter\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="CEngine.cpp">
-      <Filter>Plotter\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="CWindowsApp.cpp">
       <Filter>Plotter\Engine</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="CEngine.h">
+      <Filter>Plotter\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
