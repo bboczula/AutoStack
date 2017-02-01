@@ -192,13 +192,13 @@ private:
 	void createDefaultShaders()
 	{
 		defaultVertexShader = new VertexShader();
-		defaultVertexShader->loadShaderFromFile("C:\\Users\\Perf\\Source\\Repos\\AutoStack2\\AutoStack\\AutoStack\\vs.hlsl");
+		defaultVertexShader->loadShaderFromFile("vs.hlsl");
 		defaultVertexShader->setEntryPoint("main");
 		defaultVertexShader->compile();
 		defaultVertexShader->create(pD3DDevice.Get());
 
 		defaultPixelShader = new PixelShader();
-		defaultPixelShader->loadShaderFromFile("C:\\Users\\Perf\\Source\\Repos\\AutoStack2\\AutoStack\\AutoStack\\ps.hlsl");
+		defaultPixelShader->loadShaderFromFile("ps.hlsl");
 		defaultPixelShader->setEntryPoint("main");
 		defaultPixelShader->compile();
 		defaultPixelShader->create(pD3DDevice.Get());
