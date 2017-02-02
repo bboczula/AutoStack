@@ -18,6 +18,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthTexture;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pDepthStencilState;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> pD3DInputLayout;
 	HWND* parentWindowHandler;
 	PixelShader* defaultPixelShader;
 	VertexShader* defaultVertexShader;
@@ -202,6 +203,30 @@ private:
 		defaultPixelShader->compile();
 		defaultPixelShader->create(pD3DDevice.Get());
 	}
+	void setupInputAssemblerStage()
+	{
+		D3D11_INPUT_ELEMENT_DESC defaultInputLayout[] = 
+		{
+			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		};
+
+		HRESULT result = pD3DDevice->CreateInputLayout(defaultInputLayout, ARRAYSIZE(defaultInputLayout), defaultVertexShader->getBlobPtr()->GetBufferPointer(),
+			defaultVertexShader->getBlobPtr()->GetBufferSize(), &pD3DInputLayout);
+		if (SUCCEEDED(result))
+		{
+			std::cout << "Input Layout creation succeded." << std::endl;
+		}
+		else
+		{
+			std::cout << "ERROR: Input Layout creation failed!" << std::endl;
+			LPCSTR errMsg = _com_error(result).ErrorMessage();
+			std::cout << " > " << errMsg << std::endl;
+		}
+
+		pD3DImmediateContext->IASetInputLayout(pD3DInputLayout.Get());
+
+		pD3DImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	}
 	void clearMainRenderTarget()
 	{
 		float color[4]{ 0.667f, 0.812f, 0.816f, 1.0f };
@@ -220,6 +245,7 @@ public:
 		createMainRenderTarget();
 		createDepthStencil();
 		createDefaultShaders();
+		setupInputAssemblerStage();
 		clearMainRenderTarget();
 		present();
 	}
