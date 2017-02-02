@@ -5,6 +5,8 @@
 #include <comdef.h>
 #include <string>
 
+#include "IShader.h"
+
 class CEngine
 {
 private:
@@ -17,6 +19,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pDepthStencilState;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView;
 	HWND* parentWindowHandler;
+	PixelShader* defaultPixelShader;
+	VertexShader* defaultVertexShader;
 private:
 	void createDevice()
 	{
@@ -184,6 +188,20 @@ private:
 			std::cout << " > " << errMsg << std::endl;
 		}
 	}
+	void createDefaultShaders()
+	{
+		defaultVertexShader = new VertexShader();
+		defaultVertexShader->loadShaderFromFile("C:\\Users\\Perf\\Source\\Repos\\AutoStack2\\AutoStack\\AutoStack\\vs.hlsl");
+		defaultVertexShader->setEntryPoint("main");
+		defaultVertexShader->compile();
+		defaultVertexShader->create(pD3DDevice.Get());
+
+		defaultPixelShader = new PixelShader();
+		defaultPixelShader->loadShaderFromFile("C:\\Users\\Perf\\Source\\Repos\\AutoStack2\\AutoStack\\AutoStack\\ps.hlsl");
+		defaultPixelShader->setEntryPoint("main");
+		defaultPixelShader->compile();
+		defaultPixelShader->create(pD3DDevice.Get());
+	}
 	void clearMainRenderTarget()
 	{
 		float color[4]{ 0.667f, 0.812f, 0.816f, 1.0f };
@@ -201,6 +219,7 @@ public:
 		createSwapChain();
 		createMainRenderTarget();
 		createDepthStencil();
+		createDefaultShaders();
 		clearMainRenderTarget();
 		present();
 	}

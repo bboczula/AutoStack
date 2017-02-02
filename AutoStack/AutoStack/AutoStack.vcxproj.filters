@@ -34,4 +34,12 @@
       <Filter>Plotter\Engine</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="ps.hlsl">
+      <Filter>Plotter\Engine</Filter>
+    </Text>
+    <Text Include="vs.hlsl">
+      <Filter>Plotter\Engine</Filter>
+    </Text>
+  </ItemGroup>
 </Project>
