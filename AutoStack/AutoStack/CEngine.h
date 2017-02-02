@@ -184,6 +184,15 @@ private:
 			std::cout << " > " << errMsg << std::endl;
 		}
 	}
+	void clearMainRenderTarget()
+	{
+		float color[4]{ 0.667f, 0.812f, 0.816f, 1.0f };
+		pD3DImmediateContext->ClearRenderTargetView(pD3DRenderTargetView.Get(), color);
+	}
+	void present()
+	{
+		pD3DSwapChain->Present(0, 0);
+	}
 public:
 	CEngine(HWND* hwnd) : parentWindowHandler(hwnd)
 	{
@@ -192,5 +201,7 @@ public:
 		createSwapChain();
 		createMainRenderTarget();
 		createDepthStencil();
+		clearMainRenderTarget();
+		present();
 	}
 };
