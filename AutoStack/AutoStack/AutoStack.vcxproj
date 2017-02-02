@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="CBaseWindow.h" />
     <ClInclude Include="CWindowsApp.h" />
+    <ClInclude Include="IShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBaseWindow.cpp" />

@@ -18,6 +18,9 @@
     <ClInclude Include="CWindowsApp.h">
       <Filter>Plotter\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="IShader.h">
+      <Filter>Plotter\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBaseWindow.cpp">
