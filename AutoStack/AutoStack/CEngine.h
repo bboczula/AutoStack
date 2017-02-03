@@ -227,14 +227,10 @@ private:
 
 		pD3DImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
-	void clearMainRenderTarget()
+	void setupShaders()
 	{
-		float color[4]{ 0.667f, 0.812f, 0.816f, 1.0f };
-		pD3DImmediateContext->ClearRenderTargetView(pD3DRenderTargetView.Get(), color);
-	}
-	void present()
-	{
-		pD3DSwapChain->Present(0, 0);
+		pD3DImmediateContext->VSSetShader(defaultVertexShader->getDxShader(), nullptr, 0);
+		pD3DImmediateContext->PSSetShader(defaultPixelShader->getDxShader(), nullptr, 0);
 	}
 public:
 	CEngine(HWND* hwnd) : parentWindowHandler(hwnd)
@@ -246,7 +242,17 @@ public:
 		createDepthStencil();
 		createDefaultShaders();
 		setupInputAssemblerStage();
+		setupShaders();
 		clearMainRenderTarget();
 		present();
+	}
+	void clearMainRenderTarget()
+	{
+		float color[4]{ 0.667f, 0.812f, 0.816f, 1.0f };
+		pD3DImmediateContext->ClearRenderTargetView(pD3DRenderTargetView.Get(), color);
+	}
+	void present()
+	{
+		pD3DSwapChain->Present(0, 0);
 	}
 };

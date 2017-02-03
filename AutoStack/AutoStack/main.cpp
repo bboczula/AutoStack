@@ -20,6 +20,8 @@ private:
 	}
 	void update() override
 	{
+		engine->clearMainRenderTarget();
+		engine->present();
 	}
 	void cleanup() override
 	{

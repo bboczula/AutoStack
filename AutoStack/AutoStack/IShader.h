@@ -98,7 +98,7 @@ public:
 class PixelShader : public IShader
 {
 private:
-	Microsoft::WRL::ComPtr<ID3D11VertexShader> dxPixelShader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> dxPixelShader;
 public:
 	void compile()
 	{
@@ -136,9 +136,9 @@ public:
 	}
 	void create(ID3D11Device* device)
 	{
-		device->CreateVertexShader(getBlobPtr()->GetBufferPointer(), getBlobPtr()->GetBufferSize(), NULL, dxPixelShader.GetAddressOf());
+		device->CreatePixelShader(getBlobPtr()->GetBufferPointer(), getBlobPtr()->GetBufferSize(), NULL, dxPixelShader.GetAddressOf());
 	}
-	ID3D11VertexShader* getDxShader()
+	ID3D11PixelShader* getDxShader()
 	{
 		return dxPixelShader.Get();
 	}
