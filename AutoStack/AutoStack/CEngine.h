@@ -234,6 +234,33 @@ private:
 		pD3DImmediateContext->VSSetShader(defaultVertexShader->getDxShader(), nullptr, 0);
 		pD3DImmediateContext->PSSetShader(defaultPixelShader->getDxShader(), nullptr, 0);
 	}
+	void setupRasterizerStage()
+	{
+		D3D11_RASTERIZER_DESC rasterizerDescription;
+		ZeroMemory(&rasterizerDescription, sizeof(D3D11_RASTERIZER_DESC));
+		rasterizerDescription.AntialiasedLineEnable = false;
+		rasterizerDescription.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
+		rasterizerDescription.DepthBias = 0;
+		rasterizerDescription.DepthBiasClamp = 0.0f;
+		rasterizerDescription.DepthClipEnable = true;
+		rasterizerDescription.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+		rasterizerDescription.FrontCounterClockwise = false;
+		rasterizerDescription.MultisampleEnable = false;
+		rasterizerDescription.ScissorEnable = false;
+		rasterizerDescription.SlopeScaledDepthBias = 0.0f;
+		ID3D11RasterizerState* state;
+		pD3DDevice->CreateRasterizerState(&rasterizerDescription, &state);
+		pD3DImmediateContext->RSSetState(state);
+	}
+	void setupViewport()
+	{
+		D3D11_VIEWPORT viewport;
+		ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
+		viewport.Width = 800;
+		viewport.Height = 600;
+		viewport.MaxDepth = 1.0f;
+		pD3DImmediateContext->RSSetViewports(1, &viewport);
+	}
 public:
 	CEngine(HWND* hwnd) : parentWindowHandler(hwnd)
 	{
@@ -244,6 +271,8 @@ public:
 		createDepthStencil();
 		createDefaultShaders();
 		setupInputAssemblerStage();
+		setupRasterizerStage();
+		setupViewport();
 		setupShaders();
 		clearMainRenderTarget();
 		present();
@@ -260,11 +289,13 @@ public:
 	}
 	void bulidTriangle()
 	{
-		SVertex triangle[3]{ {0.0f, 0.75f, 0.5f}, {-0.5f, -0.75f, 0.5f}, {0.5f, -0.75f, 0.5f} };
+		const unsigned int NUM_OF_VERTICES{ 3 };
+		SVertex triangle[NUM_OF_VERTICES]{ {0.0f, 0.75f, 0.5f}, {-0.5f, -0.75f, 0.5f}, {0.5f, -0.75f, 0.5f} };
+
 		D3D11_BUFFER_DESC vertexBufferDescription;
 		ZeroMemory(&vertexBufferDescription, sizeof(D3D11_BUFFER_DESC));
 		vertexBufferDescription.Usage = D3D11_USAGE_DEFAULT;
-		vertexBufferDescription.ByteWidth = sizeof(SVertex) * 3;
+		vertexBufferDescription.ByteWidth = sizeof(SVertex) * NUM_OF_VERTICES;
 		vertexBufferDescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 		vertexBufferDescription.CPUAccessFlags = 0;
 
@@ -290,29 +321,6 @@ public:
 		UINT offset = 0;
 		pD3DImmediateContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
 		pD3DImmediateContext->OMSetRenderTargets(1, pD3DRenderTargetView.GetAddressOf(), pDepthStencilView.Get());
-
-		D3D11_VIEWPORT viewport;
-		ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
-		viewport.Width = 800;
-		viewport.Height = 600;
-		viewport.MaxDepth = 1.0f;
-		pD3DImmediateContext->RSSetViewports(1, &viewport);
-
-		D3D11_RASTERIZER_DESC rasterizerDescription;
-		ZeroMemory(&rasterizerDescription, sizeof(D3D11_RASTERIZER_DESC));
-		rasterizerDescription.AntialiasedLineEnable = false;
-		rasterizerDescription.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
-		rasterizerDescription.DepthBias = 0;
-		rasterizerDescription.DepthBiasClamp = 0.0f;
-		rasterizerDescription.DepthClipEnable = true;
-		rasterizerDescription.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
-		rasterizerDescription.FrontCounterClockwise = false;
-		rasterizerDescription.MultisampleEnable = false;
-		rasterizerDescription.ScissorEnable = false;
-		rasterizerDescription.SlopeScaledDepthBias = 0.0f;
-		ID3D11RasterizerState* state;
-		pD3DDevice->CreateRasterizerState(&rasterizerDescription, &state);
-		pD3DImmediateContext->RSSetState(state);
 	}
 	void flush()
 	{
