@@ -151,6 +151,7 @@
     <ClInclude Include="CBaseWindow.h" />
     <ClInclude Include="CWindowsApp.h" />
     <ClInclude Include="IShader.h" />
+    <ClInclude Include="SPoint.h" />
     <ClInclude Include="SVertex.h" />
   </ItemGroup>
   <ItemGroup>

@@ -24,6 +24,9 @@
     <ClInclude Include="SVertex.h">
       <Filter>Plotter\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="SPoint.h">
+      <Filter>Plotter\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBaseWindow.cpp">

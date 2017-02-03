@@ -7,6 +7,7 @@
 
 #include "IShader.h"
 #include "SVertex.h"
+#include "SPoint.h"
 
 class CEngine
 {
@@ -290,7 +291,11 @@ public:
 	void bulidTriangle()
 	{
 		const unsigned int NUM_OF_VERTICES{ 3 };
-		SVertex triangle[NUM_OF_VERTICES]{ {0.0f, 0.75f, 0.5f}, {-0.5f, -0.75f, 0.5f}, {0.5f, -0.75f, 0.5f} };
+		SPoint points[NUM_OF_VERTICES]{ { 100, 500, 1}, {100, 100, 1}, {400, 200, 1} };
+		SVertex triangle[NUM_OF_VERTICES];
+		triangle[0] = {(float)((float)(points[0].x - 400) / 400), (float)(points[0].y / 600), 0.5f};
+		triangle[1] = { -0.5f, -0.75f, 0.5f };
+		triangle[2] = { 0.5f, -0.75f, 0.5f };
 
 		D3D11_BUFFER_DESC vertexBufferDescription;
 		ZeroMemory(&vertexBufferDescription, sizeof(D3D11_BUFFER_DESC));
