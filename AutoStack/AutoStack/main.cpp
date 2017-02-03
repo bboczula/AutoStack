@@ -17,10 +17,12 @@ public:
 private:
 	void initialize() override
 	{
+		engine->bulidTriangle();
 	}
 	void update() override
 	{
 		engine->clearMainRenderTarget();
+		engine->flush();
 		engine->present();
 	}
 	void cleanup() override

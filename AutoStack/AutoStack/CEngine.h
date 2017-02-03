@@ -6,6 +6,7 @@
 #include <string>
 
 #include "IShader.h"
+#include "SVertex.h"
 
 class CEngine
 {
@@ -99,6 +100,7 @@ private:
 		ID3D11Texture2D* backBuffer;
 		pD3DSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&backBuffer));
 
+		pD3DRenderTargetView.Reset();
 		HRESULT renderTargetResult = pD3DDevice->CreateRenderTargetView(backBuffer, NULL, &pD3DRenderTargetView);
 		if (SUCCEEDED(renderTargetResult))
 		{
@@ -248,11 +250,72 @@ public:
 	}
 	void clearMainRenderTarget()
 	{
-		float color[4]{ 0.667f, 0.812f, 0.816f, 1.0f };
+		float color[4]{ 0.2431f, 0.5843f, 0.7568f, 1.0f };
 		pD3DImmediateContext->ClearRenderTargetView(pD3DRenderTargetView.Get(), color);
+		pD3DImmediateContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
 	void present()
 	{
 		pD3DSwapChain->Present(0, 0);
+	}
+	void bulidTriangle()
+	{
+		SVertex triangle[3]{ {0.0f, 0.75f, 0.5f}, {-0.5f, -0.75f, 0.5f}, {0.5f, -0.75f, 0.5f} };
+		D3D11_BUFFER_DESC vertexBufferDescription;
+		ZeroMemory(&vertexBufferDescription, sizeof(D3D11_BUFFER_DESC));
+		vertexBufferDescription.Usage = D3D11_USAGE_DEFAULT;
+		vertexBufferDescription.ByteWidth = sizeof(SVertex) * 3;
+		vertexBufferDescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		vertexBufferDescription.CPUAccessFlags = 0;
+
+		D3D11_SUBRESOURCE_DATA initData;
+		initData.pSysMem = triangle;
+		initData.SysMemPitch = 0;
+		initData.SysMemSlicePitch = 0;
+
+		ID3D11Buffer* vertexBuffer;
+		HRESULT result = pD3DDevice->CreateBuffer(&vertexBufferDescription, &initData, &vertexBuffer);
+		if (SUCCEEDED(result))
+		{
+			std::cout << "Vertex Buffer creation succeded." << std::endl;
+		}
+		else
+		{
+			std::cout << "ERROR: Vertex Buffer creation failed!" << std::endl;
+			LPCSTR errMsg = _com_error(result).ErrorMessage();
+			std::cout << " > " << errMsg << std::endl;
+		}
+
+		const UINT stride = sizeof(SVertex);
+		UINT offset = 0;
+		pD3DImmediateContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+		pD3DImmediateContext->OMSetRenderTargets(1, pD3DRenderTargetView.GetAddressOf(), pDepthStencilView.Get());
+
+		D3D11_VIEWPORT viewport;
+		ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
+		viewport.Width = 800;
+		viewport.Height = 600;
+		viewport.MaxDepth = 1.0f;
+		pD3DImmediateContext->RSSetViewports(1, &viewport);
+
+		D3D11_RASTERIZER_DESC rasterizerDescription;
+		ZeroMemory(&rasterizerDescription, sizeof(D3D11_RASTERIZER_DESC));
+		rasterizerDescription.AntialiasedLineEnable = false;
+		rasterizerDescription.CullMode = D3D11_CULL_MODE::D3D11_CULL_NONE;
+		rasterizerDescription.DepthBias = 0;
+		rasterizerDescription.DepthBiasClamp = 0.0f;
+		rasterizerDescription.DepthClipEnable = true;
+		rasterizerDescription.FillMode = D3D11_FILL_MODE::D3D11_FILL_SOLID;
+		rasterizerDescription.FrontCounterClockwise = false;
+		rasterizerDescription.MultisampleEnable = false;
+		rasterizerDescription.ScissorEnable = false;
+		rasterizerDescription.SlopeScaledDepthBias = 0.0f;
+		ID3D11RasterizerState* state;
+		pD3DDevice->CreateRasterizerState(&rasterizerDescription, &state);
+		pD3DImmediateContext->RSSetState(state);
+	}
+	void flush()
+	{
+		pD3DImmediateContext->Draw(3, 0);
 	}
 };

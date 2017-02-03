@@ -1,4 +1,5 @@
-float4 main(float4 position : POSITION) : SV_POSITION
+float4 main(float3 position : POSITION) : SV_POSITION
 {
-	return position;
+	// Be careful, this last parameter can disable rendering!!!
+	return float4(position.xyz, 1.0f);
 }
