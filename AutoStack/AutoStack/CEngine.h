@@ -114,7 +114,7 @@ private:
 			std::cout << " > " << errMsg << std::endl;
 		}
 	}
-	void createDepthStencil()
+	void setupDepthStencil()
 	{
 		D3D11_TEXTURE2D_DESC depthStencilTexture;
 		ZeroMemory(&depthStencilTexture, sizeof(D3D11_TEXTURE2D_DESC));
@@ -269,7 +269,7 @@ public:
 		createDxgiFactory();
 		createSwapChain();
 		createMainRenderTarget();
-		createDepthStencil();
+		setupDepthStencil();
 		createDefaultShaders();
 		setupInputAssemblerStage();
 		setupRasterizerStage();
