@@ -149,9 +149,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CBaseWindow.h" />
+    <ClInclude Include="CDataBase.h" />
     <ClInclude Include="CWindowsApp.h" />
+    <ClInclude Include="SDate.h" />
     <ClInclude Include="IShader.h" />
     <ClInclude Include="SPoint.h" />
+    <ClInclude Include="SStock.h" />
     <ClInclude Include="SVertex.h" />
   </ItemGroup>
   <ItemGroup>

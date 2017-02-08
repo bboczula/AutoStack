@@ -15,16 +15,18 @@ public:
 		engine = new CEngine(this->getHwndPtr());
 	}
 private:
+	int pos = 200;
 	void initialize() override
 	{
 	}
 	void update() override
 	{
+		pos += 1;
 		engine->clearMainRenderTarget();
-		engine->drawQuad(SPoint{ 200, 200, 10}, 200, 100);
-		engine->drawQuad(SPoint{ 200, 400, 10 }, 150, 150);
-		engine->drawQuad(SPoint{ 400, 450, 10 }, 250, 50);
-		engine->drawQuad(SPoint{ 450, 500, 10 }, 250, 50);
+		engine->drawQuad(SPoint{ 200, 600, 10}, 10, 100);
+		engine->drawQuad(SPoint{ 200, 400, 10 }, 10, 150);
+		engine->drawQuad(SPoint{ 400, 450, 10 }, 10, 50);
+		engine->drawQuad(SPoint{ 450, 500, 10 }, 10, 50);
 		engine->present();
 	}
 	void cleanup() override

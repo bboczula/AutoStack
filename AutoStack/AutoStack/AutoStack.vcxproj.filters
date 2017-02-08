@@ -27,6 +27,15 @@
     <ClInclude Include="SPoint.h">
       <Filter>Plotter\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="SStock.h">
+      <Filter>DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="SDate.h">
+      <Filter>DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="CDataBase.h">
+      <Filter>DataBase</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBaseWindow.cpp">
