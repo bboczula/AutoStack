@@ -228,7 +228,7 @@ private:
 
 		pD3DImmediateContext->IASetInputLayout(pD3DInputLayout.Get());
 
-		pD3DImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		pD3DImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	}
 	void setupShaders()
 	{
@@ -288,14 +288,18 @@ public:
 	{
 		pD3DSwapChain->Present(0, 0);
 	}
-	void bulidTriangle()
+	void drawQuad(SPoint anchor, int width, int height)
 	{
-		const unsigned int NUM_OF_VERTICES{ 3 };
-		SPoint points[NUM_OF_VERTICES]{ { 100, 500, 1}, {100, 100, 1}, {400, 200, 1} };
-		SVertex triangle[NUM_OF_VERTICES];
-		triangle[0] = {(float)((float)(points[0].x - 400) / 400), (float)(points[0].y / 600), 0.5f};
-		triangle[1] = { -0.5f, -0.75f, 0.5f };
-		triangle[2] = { 0.5f, -0.75f, 0.5f };
+		float x = static_cast<float>(anchor.x);
+		float y = static_cast<float>(anchor.y);
+
+		const unsigned int NUM_OF_VERTICES{ 4 };
+
+		SVertex quad[NUM_OF_VERTICES];
+		quad[0] = { x, y, 0.5f };
+		quad[1] = { x, y - height, 0.5f };
+		quad[3] = { x + width, y - height, 0.5f };
+		quad[2] = { x+width, y, 0.5f };
 
 		D3D11_BUFFER_DESC vertexBufferDescription;
 		ZeroMemory(&vertexBufferDescription, sizeof(D3D11_BUFFER_DESC));
@@ -305,7 +309,7 @@ public:
 		vertexBufferDescription.CPUAccessFlags = 0;
 
 		D3D11_SUBRESOURCE_DATA initData;
-		initData.pSysMem = triangle;
+		initData.pSysMem = quad;
 		initData.SysMemPitch = 0;
 		initData.SysMemSlicePitch = 0;
 
@@ -313,7 +317,9 @@ public:
 		HRESULT result = pD3DDevice->CreateBuffer(&vertexBufferDescription, &initData, &vertexBuffer);
 		if (SUCCEEDED(result))
 		{
+#if defined _DEBUG
 			std::cout << "Vertex Buffer creation succeded." << std::endl;
+#endif
 		}
 		else
 		{
@@ -326,9 +332,9 @@ public:
 		UINT offset = 0;
 		pD3DImmediateContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
 		pD3DImmediateContext->OMSetRenderTargets(1, pD3DRenderTargetView.GetAddressOf(), pDepthStencilView.Get());
-	}
-	void flush()
-	{
-		pD3DImmediateContext->Draw(3, 0);
+		pD3DImmediateContext->Draw(4, 0);
+
+		// Release the buffers
+		vertexBuffer->Release();
 	}
 };
