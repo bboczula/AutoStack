@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AutoStack", "AutoStack\AutoStack.vcxproj", "{7E7FD13F-B652-4F21-A2EE-9B837134D78D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DataBaseUnitTest", "DataBaseUnitTest\DataBaseUnitTest.vcxproj", "{9FB83139-2C55-4F26-847B-FF6FB7DCC516}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{7E7FD13F-B652-4F21-A2EE-9B837134D78D}.Release|x64.Build.0 = Release|x64
 		{7E7FD13F-B652-4F21-A2EE-9B837134D78D}.Release|x86.ActiveCfg = Release|Win32
 		{7E7FD13F-B652-4F21-A2EE-9B837134D78D}.Release|x86.Build.0 = Release|Win32
+		{9FB83139-2C55-4F26-847B-FF6FB7DCC516}.Debug|x64.ActiveCfg = Debug|x64
+		{9FB83139-2C55-4F26-847B-FF6FB7DCC516}.Debug|x64.Build.0 = Debug|x64
+		{9FB83139-2C55-4F26-847B-FF6FB7DCC516}.Debug|x86.ActiveCfg = Debug|Win32
+		{9FB83139-2C55-4F26-847B-FF6FB7DCC516}.Debug|x86.Build.0 = Debug|Win32
+		{9FB83139-2C55-4F26-847B-FF6FB7DCC516}.Release|x64.ActiveCfg = Release|x64
+		{9FB83139-2C55-4F26-847B-FF6FB7DCC516}.Release|x64.Build.0 = Release|x64
+		{9FB83139-2C55-4F26-847B-FF6FB7DCC516}.Release|x86.ActiveCfg = Release|Win32
+		{9FB83139-2C55-4F26-847B-FF6FB7DCC516}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

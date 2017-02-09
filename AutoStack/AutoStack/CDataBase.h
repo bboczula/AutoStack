@@ -46,6 +46,15 @@ public:
 		}
 		numOfItems++;
 	}
+	T* at(int j)
+	{
+		SListItem<T>* temp = begin;
+		for (int i = 0; i < j; i++)
+		{
+			temp = temp->next;
+		}
+		return temp->data;
+	}
 	~CList()
 	{
 		SListItem<T>* current = begin;
@@ -117,5 +126,9 @@ public:
 			objFile.close();
 			std::cout << "DataBase contains " << dataBase.numOfItems << " records." << std::endl;
 		}
+	}
+	SStock* at(int i)
+	{
+		return dataBase.at(i);
 	}
 };
