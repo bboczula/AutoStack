@@ -36,6 +36,12 @@
     <ClInclude Include="CDataBase.h">
       <Filter>DataBase</Filter>
     </ClInclude>
+    <ClInclude Include="SListItem.h">
+      <Filter>DataBase</Filter>
+    </ClInclude>
+    <ClInclude Include="CList.h">
+      <Filter>DataBase</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBaseWindow.cpp">

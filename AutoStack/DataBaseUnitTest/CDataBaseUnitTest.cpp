@@ -64,5 +64,28 @@ namespace DataBaseUnitTest
 			Assert::AreEqual(static_cast<double>(891.2), result->close);
 			Assert::AreEqual(static_cast<double>(31913), result->volume);
 		}
+		TEST_METHOD(VarifyNumberOfItems)
+		{
+			dataBase.buildFromFile("wig_d.csv");
+			Assert::AreEqual(static_cast<unsigned int>(6009), dataBase.size());
+		}
+		TEST_METHOD(VerifyLastDataItemDate)
+		{
+			dataBase.buildFromFile("wig_d.csv");
+			SStock* result = dataBase.at(6008);
+			Assert::AreEqual(static_cast<unsigned int>(2017), result->date.year);
+			Assert::AreEqual(static_cast<unsigned int>(2), result->date.month);
+			Assert::AreEqual(static_cast<unsigned int>(7), result->date.day);
+		}
+		TEST_METHOD(VarifyLastDataItemContent)
+		{
+			dataBase.buildFromFile("wig_d.csv");
+			SStock* result = dataBase.at(6008);
+			Assert::AreEqual(static_cast<double>(55606.83), result->open);
+			Assert::AreEqual(static_cast<double>(55758.32), result->max);
+			Assert::AreEqual(static_cast<double>(55457.09), result->min);
+			Assert::AreEqual(static_cast<double>(55617.09), result->close);
+			Assert::AreEqual(static_cast<double>(36911846), result->volume);
+		}
 	};
 }
