@@ -1,6 +1,7 @@
 #include "CBaseWindow.h"
 #include "CWindowsApp.h"
 #include "CEngine.h"
+#include "CDataBase.h"
 #include <iostream>
 
 class CWindowsTest : public CWindowsApp
@@ -36,6 +37,9 @@ private:
 
 int main(int argc, char* argv[])
 {
+	CDataBase wig;
+	wig.buildFromFile("wig_d.csv");
+
 	CWindowsTest* window = new CWindowsTest();
 	window->start();
 	delete window;

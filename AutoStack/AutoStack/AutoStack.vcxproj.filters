@@ -57,4 +57,7 @@
       <Filter>Plotter\Engine</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="wig_d.csv" />
+  </ItemGroup>
 </Project>

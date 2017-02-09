@@ -167,6 +167,9 @@
     <Text Include="ps.hlsl" />
     <Text Include="vs.hlsl" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="wig_d.csv" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
