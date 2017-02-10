@@ -45,6 +45,15 @@
     <ClInclude Include="SPsConstantBuffer.h">
       <Filter>Plotter\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="CRenderPass.h">
+      <Filter>Plotter\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CSolidColorRenderPass.h">
+      <Filter>Plotter\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="SColor.h">
+      <Filter>Plotter\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBaseWindow.cpp">
@@ -55,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="CEngine.h">
+      <Filter>Plotter\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="CSolidColorRenderPass.cpp">
       <Filter>Plotter\Engine</Filter>
     </ClCompile>
   </ItemGroup>

@@ -65,7 +65,7 @@ private:
 	}
 	void update() override
 	{
-		initialize();
+		//initialize();
 	}
 	void cleanup() override
 	{

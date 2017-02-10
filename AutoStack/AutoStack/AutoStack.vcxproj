@@ -151,7 +151,10 @@
     <ClInclude Include="CBaseWindow.h" />
     <ClInclude Include="CDataBase.h" />
     <ClInclude Include="CList.h" />
+    <ClInclude Include="CRenderPass.h" />
+    <ClInclude Include="CSolidColorRenderPass.h" />
     <ClInclude Include="CWindowsApp.h" />
+    <ClInclude Include="SColor.h" />
     <ClInclude Include="SDate.h" />
     <ClInclude Include="IShader.h" />
     <ClInclude Include="SListItem.h" />
@@ -163,6 +166,7 @@
   <ItemGroup>
     <ClCompile Include="CBaseWindow.cpp" />
     <ClCompile Include="CEngine.h" />
+    <ClCompile Include="CSolidColorRenderPass.cpp" />
     <ClCompile Include="CWindowsApp.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

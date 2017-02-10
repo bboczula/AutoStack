@@ -9,6 +9,7 @@
 #include "SVertex.h"
 #include "SPoint.h"
 #include "SPsConstantBuffer.h"
+#include "CSolidColorRenderPass.h"
 
 class CEngine
 {
@@ -23,8 +24,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView;
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> pD3DInputLayout;
 	HWND* parentWindowHandler;
-	PixelShader* defaultPixelShader;
-	VertexShader* defaultVertexShader;
+	CSolidColorRenderPass* currentRenderPass;
 private:
 	void createDevice()
 	{
@@ -115,6 +115,10 @@ private:
 			std::cout << " > " << errMsg << std::endl;
 		}
 	}
+	void createRenderPass()
+	{
+		currentRenderPass = new CSolidColorRenderPass(pD3DDevice.Get());
+	}
 	void setupDepthStencil()
 	{
 		D3D11_TEXTURE2D_DESC depthStencilTexture;
@@ -193,20 +197,6 @@ private:
 			std::cout << " > " << errMsg << std::endl;
 		}
 	}
-	void createDefaultShaders()
-	{
-		defaultVertexShader = new VertexShader();
-		defaultVertexShader->loadShaderFromFile("vs.hlsl");
-		defaultVertexShader->setEntryPoint("main");
-		defaultVertexShader->compile();
-		defaultVertexShader->create(pD3DDevice.Get());
-
-		defaultPixelShader = new PixelShader();
-		defaultPixelShader->loadShaderFromFile("ps.hlsl");
-		defaultPixelShader->setEntryPoint("main");
-		defaultPixelShader->compile();
-		defaultPixelShader->create(pD3DDevice.Get());
-	}
 	void setupInputAssemblerStage()
 	{
 		D3D11_INPUT_ELEMENT_DESC defaultInputLayout[] = 
@@ -214,8 +204,8 @@ private:
 			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
 		};
 
-		HRESULT result = pD3DDevice->CreateInputLayout(defaultInputLayout, ARRAYSIZE(defaultInputLayout), defaultVertexShader->getBlobPtr()->GetBufferPointer(),
-			defaultVertexShader->getBlobPtr()->GetBufferSize(), &pD3DInputLayout);
+		HRESULT result = pD3DDevice->CreateInputLayout(defaultInputLayout, ARRAYSIZE(defaultInputLayout), currentRenderPass->getVertexShader()->getBlobPtr()->GetBufferPointer(),
+			currentRenderPass->getVertexShader()->getBlobPtr()->GetBufferSize(), &pD3DInputLayout);
 		if (SUCCEEDED(result))
 		{
 			std::cout << "Input Layout creation succeded." << std::endl;
@@ -233,8 +223,8 @@ private:
 	}
 	void setupShaders()
 	{
-		pD3DImmediateContext->VSSetShader(defaultVertexShader->getDxShader(), nullptr, 0);
-		pD3DImmediateContext->PSSetShader(defaultPixelShader->getDxShader(), nullptr, 0);
+		pD3DImmediateContext->VSSetShader(currentRenderPass->getVertexShader()->getDxShader(), nullptr, 0);
+		pD3DImmediateContext->PSSetShader(currentRenderPass->getPixelShader()->getDxShader(), nullptr, 0);
 	}
 	void setupRasterizerStage()
 	{
@@ -269,9 +259,9 @@ public:
 		createDevice();
 		createDxgiFactory();
 		createSwapChain();
+		createRenderPass();
 		createMainRenderTarget();
 		setupDepthStencil();
-		createDefaultShaders();
 		setupInputAssemblerStage();
 		setupRasterizerStage();
 		setupViewport();
