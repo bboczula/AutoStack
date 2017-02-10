@@ -293,17 +293,24 @@ public:
 	{
 		// Draw Frame
 		const int THICKNESS{ 3 };
-		drawQuad(SPoint{ 5, 595, 10 }, THICKNESS, 590);
-		drawQuad(SPoint{ 795, 595, 10 }, THICKNESS, 590);
-		drawQuad(SPoint{ 5, 595, 10 }, 790, THICKNESS);
-		drawQuad(SPoint{ 5, 5, 10 }, 791, THICKNESS);
+		const int CANVAS_WIDTH{ 800 };
+		const int CANVAS_HEIGHT{ 600 };
+		const int LEFT_MARGIN{ 5 };
+		const int RIGHT_MARGIN{ 5 };
+		const int TOP_MARGIN{ 5 };
+		const int BOTTOM_MARGIN{ 5 };
+
+		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
+		drawQuad(SPoint{ CANVAS_WIDTH - TOP_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
+		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), THICKNESS);
+		drawQuad(SPoint{ LEFT_MARGIN, TOP_MARGIN, 10 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), THICKNESS);
 
 		// Draw lines
-		int numOfSteps = 5;
+		int numOfSteps = 10;
 		int step = static_cast<int>(595 / numOfSteps);
 		for (int i = 0; i < numOfSteps; i++)
 		{
-			drawQuad(SPoint{ 5, 595 - (i * step), 10 }, 790, 1);
+			drawQuad(SPoint{ LEFT_MARGIN, 595 - (i * step), 10 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), 1);
 		}
 	}
 	void drawQuad(SPoint anchor, int width, int height)
