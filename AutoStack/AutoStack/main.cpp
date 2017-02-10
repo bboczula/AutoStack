@@ -41,17 +41,16 @@ private:
 				scopeMin = temp->min;
 			}
 		}
-		std::cout << "Max for the scope is " << scopeMax << std::endl;
 
 		// Draw chart
 		temp = wig.at(START_AT);
 		engine->clearMainRenderTarget();
+		engine->drawFrame();
 		for (int i = 0; i < NUM_OF_DAYS; i++)
 		{
 			temp = wig.at(START_AT + i);
 			int close = static_cast<int>((temp->min * 600.0) / scopeMax);
 			int open = static_cast<int>((temp->max * 600.0) / scopeMax);
-			std::cout << close << std::endl;
 			SPoint p{ 100 + (15 * i), open, 10 };
 			if (open > close)
 			{
@@ -66,7 +65,7 @@ private:
 	}
 	void update() override
 	{
-		
+		initialize();
 	}
 	void cleanup() override
 	{

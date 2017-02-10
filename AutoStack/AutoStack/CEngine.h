@@ -8,6 +8,7 @@
 #include "IShader.h"
 #include "SVertex.h"
 #include "SPoint.h"
+#include "SPsConstantBuffer.h"
 
 class CEngine
 {
@@ -288,6 +289,23 @@ public:
 	{
 		pD3DSwapChain->Present(0, 0);
 	}
+	void drawFrame()
+	{
+		// Draw Frame
+		const int THICKNESS{ 3 };
+		drawQuad(SPoint{ 5, 595, 10 }, THICKNESS, 590);
+		drawQuad(SPoint{ 795, 595, 10 }, THICKNESS, 590);
+		drawQuad(SPoint{ 5, 595, 10 }, 790, THICKNESS);
+		drawQuad(SPoint{ 5, 5, 10 }, 791, THICKNESS);
+
+		// Draw lines
+		int numOfSteps = 5;
+		int step = static_cast<int>(595 / numOfSteps);
+		for (int i = 0; i < numOfSteps; i++)
+		{
+			drawQuad(SPoint{ 5, 595 - (i * step), 10 }, 790, 1);
+		}
+	}
 	void drawQuad(SPoint anchor, int width, int height)
 	{
 		float x = static_cast<float>(anchor.x);
@@ -328,13 +346,49 @@ public:
 			std::cout << " > " << errMsg << std::endl;
 		}
 
+		// Create Constant Buffers
+		D3D11_BUFFER_DESC constantBufferDescription;
+		ZeroMemory(&constantBufferDescription, sizeof(D3D11_BUFFER_DESC));
+
+		constantBufferDescription.ByteWidth = sizeof(SPsConstantBuffer);
+		constantBufferDescription.Usage = D3D11_USAGE_DYNAMIC;
+		constantBufferDescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		constantBufferDescription.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		SPsConstantBuffer psData;
+		psData.r = 0.3019f;
+		psData.g = 0.7019f;
+		psData.b = 0.3450f;
+
+		D3D11_SUBRESOURCE_DATA initData2;
+		initData2.pSysMem = &psData;
+		initData2.SysMemPitch = 0;
+		initData2.SysMemSlicePitch = 0;
+
+		ID3D11Buffer* constantBuffer;
+		HRESULT pscbResult = pD3DDevice->CreateBuffer(&constantBufferDescription, &initData2, &constantBuffer);
+		if (SUCCEEDED(pscbResult))
+		{
+#if defined _DEBUG
+			std::cout << "PS Context Buffer creation succeded." << std::endl;
+#endif
+		}
+		else
+		{
+			std::cout << "ERROR: PS Context Buffer creation failed!" << std::endl;
+			LPCSTR errMsg = _com_error(pscbResult).ErrorMessage();
+			std::cout << " > " << errMsg << std::endl;
+		}
+
 		const UINT stride = sizeof(SVertex);
 		UINT offset = 0;
 		pD3DImmediateContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+		pD3DImmediateContext->PSSetConstantBuffers(0, 1, &constantBuffer);
 		pD3DImmediateContext->OMSetRenderTargets(1, pD3DRenderTargetView.GetAddressOf(), pDepthStencilView.Get());
 		pD3DImmediateContext->Draw(4, 0);
 
 		// Release the buffers
 		vertexBuffer->Release();
+		constantBuffer->Release();
 	}
 };

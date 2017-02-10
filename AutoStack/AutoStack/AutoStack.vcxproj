@@ -156,6 +156,7 @@
     <ClInclude Include="IShader.h" />
     <ClInclude Include="SListItem.h" />
     <ClInclude Include="SPoint.h" />
+    <ClInclude Include="SPsConstantBuffer.h" />
     <ClInclude Include="SStock.h" />
     <ClInclude Include="SVertex.h" />
   </ItemGroup>
