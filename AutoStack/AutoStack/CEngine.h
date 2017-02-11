@@ -22,7 +22,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthTexture;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pDepthStencilState;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView;
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> pD3DInputLayout;
 	HWND* parentWindowHandler;
 	CSolidColorRenderPass* currentRenderPass;
 private:
@@ -199,27 +198,8 @@ private:
 	}
 	void setupInputAssemblerStage()
 	{
-		D3D11_INPUT_ELEMENT_DESC defaultInputLayout[] = 
-		{
-			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}
-		};
-
-		HRESULT result = pD3DDevice->CreateInputLayout(defaultInputLayout, ARRAYSIZE(defaultInputLayout), currentRenderPass->getVertexShader()->getBlobPtr()->GetBufferPointer(),
-			currentRenderPass->getVertexShader()->getBlobPtr()->GetBufferSize(), &pD3DInputLayout);
-		if (SUCCEEDED(result))
-		{
-			std::cout << "Input Layout creation succeded." << std::endl;
-		}
-		else
-		{
-			std::cout << "ERROR: Input Layout creation failed!" << std::endl;
-			LPCSTR errMsg = _com_error(result).ErrorMessage();
-			std::cout << " > " << errMsg << std::endl;
-		}
-
-		pD3DImmediateContext->IASetInputLayout(pD3DInputLayout.Get());
-
-		pD3DImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+		pD3DImmediateContext->IASetInputLayout(currentRenderPass->getInputLayout());
+		pD3DImmediateContext->IASetPrimitiveTopology(*(currentRenderPass->getTopology()));
 	}
 	void setupShaders()
 	{
@@ -290,6 +270,7 @@ public:
 		const int TOP_MARGIN{ 5 };
 		const int BOTTOM_MARGIN{ 5 };
 
+		currentRenderPass->setColor(0, 255, 255);
 		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
 		drawQuad(SPoint{ CANVAS_WIDTH - TOP_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
 		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), THICKNESS);
@@ -343,49 +324,24 @@ public:
 			std::cout << " > " << errMsg << std::endl;
 		}
 
-		// Create Constant Buffers
-		D3D11_BUFFER_DESC constantBufferDescription;
-		ZeroMemory(&constantBufferDescription, sizeof(D3D11_BUFFER_DESC));
-
-		constantBufferDescription.ByteWidth = sizeof(SPsConstantBuffer);
-		constantBufferDescription.Usage = D3D11_USAGE_DYNAMIC;
-		constantBufferDescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		constantBufferDescription.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-		SPsConstantBuffer psData;
-		psData.r = 0.3019f;
-		psData.g = 0.7019f;
-		psData.b = 0.3450f;
-
-		D3D11_SUBRESOURCE_DATA initData2;
-		initData2.pSysMem = &psData;
-		initData2.SysMemPitch = 0;
-		initData2.SysMemSlicePitch = 0;
-
-		ID3D11Buffer* constantBuffer;
-		HRESULT pscbResult = pD3DDevice->CreateBuffer(&constantBufferDescription, &initData2, &constantBuffer);
-		if (SUCCEEDED(pscbResult))
-		{
-#if defined _DEBUG
-			std::cout << "PS Context Buffer creation succeded." << std::endl;
-#endif
-		}
-		else
-		{
-			std::cout << "ERROR: PS Context Buffer creation failed!" << std::endl;
-			LPCSTR errMsg = _com_error(pscbResult).ErrorMessage();
-			std::cout << " > " << errMsg << std::endl;
-		}
-
 		const UINT stride = sizeof(SVertex);
 		UINT offset = 0;
 		pD3DImmediateContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
-		pD3DImmediateContext->PSSetConstantBuffers(0, 1, &constantBuffer);
+		if (currentRenderPass->isPsCbPresent())
+		{
+			std::cout << "PS CB Present" << std::endl;
+			currentRenderPass->setColor(0, std::rand() % 255, 0);
+			ID3D11Buffer* temp = currentRenderPass->getPsConstantBuffer();
+			pD3DImmediateContext->PSSetConstantBuffers(0, 1, &temp);
+		}
+		else
+		{
+			std::cout << "ERROR: PS CB NOT present!" << std::endl;
+		}
 		pD3DImmediateContext->OMSetRenderTargets(1, pD3DRenderTargetView.GetAddressOf(), pDepthStencilView.Get());
 		pD3DImmediateContext->Draw(4, 0);
 
 		// Release the buffers
 		vertexBuffer->Release();
-		constantBuffer->Release();
 	}
 };

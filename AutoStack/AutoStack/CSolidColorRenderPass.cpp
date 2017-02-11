@@ -3,7 +3,31 @@
 CSolidColorRenderPass::CSolidColorRenderPass(ID3D11Device* device) : CRenderPass(device)
 {
 	std::cout << "Creating Solid Color Render Pass..." << std::endl;
-	// Compile shaders
+	
+	setColor(0, 255, 0);
+	compileShaders();
+	createInputLayout();
+	createConstantBuffers();
+}
+
+CSolidColorRenderPass::~CSolidColorRenderPass()
+{
+	if (pixelShader)
+		delete pixelShader;
+
+	if (vertexShader)
+		delete vertexShader;
+}
+
+void CSolidColorRenderPass::setColor(int r, int g, int b)
+{
+	activeColor.r = r;
+	activeColor.g = g;
+	activeColor.b = b;
+}
+
+void CSolidColorRenderPass::compileShaders()
+{
 	pixelShader = new PixelShader();
 	pixelShader->loadShaderFromFile("ps.hlsl");
 	pixelShader->setEntryPoint("main");
@@ -17,11 +41,61 @@ CSolidColorRenderPass::CSolidColorRenderPass(ID3D11Device* device) : CRenderPass
 	vertexShader->create(device);
 }
 
-CSolidColorRenderPass::~CSolidColorRenderPass()
+void CSolidColorRenderPass::createInputLayout()
 {
-	if (pixelShader)
-		delete pixelShader;
+	D3D11_INPUT_ELEMENT_DESC defaultInputLayout[] =
+	{
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
 
-	if (vertexShader)
-		delete vertexShader;
+	HRESULT result = device->CreateInputLayout(defaultInputLayout, ARRAYSIZE(defaultInputLayout),
+		vertexShader->getBlobPtr()->GetBufferPointer(), vertexShader->getBlobPtr()->GetBufferSize(), &inputLayout);
+	if (SUCCEEDED(result))
+	{
+#if defined _DEBUG
+		std::cout << "Input Layout creation succeded." << std::endl;
+#endif
+	}
+	else
+	{
+		std::cout << "ERROR: Input Layout creation failed!" << std::endl;
+		LPCSTR errMsg = _com_error(result).ErrorMessage();
+		std::cout << " > " << errMsg << std::endl;
+	}
+}
+
+void CSolidColorRenderPass::createConstantBuffers()
+{
+	// Create PS Constant Buffer
+	D3D11_BUFFER_DESC constantBufferDescription;
+	ZeroMemory(&constantBufferDescription, sizeof(D3D11_BUFFER_DESC));
+
+	constantBufferDescription.ByteWidth = sizeof(SPsConstantBuffer);
+	constantBufferDescription.Usage = D3D11_USAGE_DYNAMIC;
+	constantBufferDescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	constantBufferDescription.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+	SPsConstantBuffer psData;
+	psData.r = static_cast<float>(activeColor.r / 255.0f);
+	psData.g = static_cast<float>(activeColor.g / 255.0f);
+	psData.b = static_cast<float>(activeColor.b / 255.0f);
+
+	D3D11_SUBRESOURCE_DATA initData2;
+	initData2.pSysMem = &psData;
+	initData2.SysMemPitch = 0;
+	initData2.SysMemSlicePitch = 0;
+
+	HRESULT pscbResult = device->CreateBuffer(&constantBufferDescription, &initData2, &psConstantBuffer);
+	if (SUCCEEDED(pscbResult))
+	{
+#if defined _DEBUG
+		std::cout << "PS Context Buffer creation succeded." << std::endl;
+#endif
+	}
+	else
+	{
+		std::cout << "ERROR: PS Context Buffer creation failed!" << std::endl;
+		LPCSTR errMsg = _com_error(pscbResult).ErrorMessage();
+		std::cout << " > " << errMsg << std::endl;
+	}
 }
