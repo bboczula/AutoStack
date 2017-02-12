@@ -5,6 +5,9 @@ CSolidColorRenderPass::CSolidColorRenderPass(ID3D11Device* device) : CRenderPass
 	std::cout << "Creating Solid Color Render Pass..." << std::endl;
 	
 	setColor(0, 255, 0);
+	cbData.r = static_cast<float>(activeColor.r / 255.0f);
+	cbData.g = static_cast<float>(activeColor.g / 255.0f);
+	cbData.b = static_cast<float>(activeColor.b / 255.0f);
 	compileShaders();
 	createInputLayout();
 	createConstantBuffers();
@@ -24,6 +27,14 @@ void CSolidColorRenderPass::setColor(int r, int g, int b)
 	activeColor.r = r;
 	activeColor.g = g;
 	activeColor.b = b;
+	cbData.r = static_cast<float>(activeColor.r / 255.0f);
+	cbData.g = static_cast<float>(activeColor.g / 255.0f);
+	cbData.b = static_cast<float>(activeColor.b / 255.0f);
+}
+
+SPsConstantBuffer * CSolidColorRenderPass::getConstantBufferData()
+{
+	return &cbData;
 }
 
 void CSolidColorRenderPass::compileShaders()
@@ -71,17 +82,13 @@ void CSolidColorRenderPass::createConstantBuffers()
 	ZeroMemory(&constantBufferDescription, sizeof(D3D11_BUFFER_DESC));
 
 	constantBufferDescription.ByteWidth = sizeof(SPsConstantBuffer);
-	constantBufferDescription.Usage = D3D11_USAGE_DYNAMIC;
+	constantBufferDescription.Usage = D3D11_USAGE_DEFAULT;
 	constantBufferDescription.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	constantBufferDescription.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-
-	SPsConstantBuffer psData;
-	psData.r = static_cast<float>(activeColor.r / 255.0f);
-	psData.g = static_cast<float>(activeColor.g / 255.0f);
-	psData.b = static_cast<float>(activeColor.b / 255.0f);
+	//constantBufferDescription.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	constantBufferDescription.CPUAccessFlags = 0;
 
 	D3D11_SUBRESOURCE_DATA initData2;
-	initData2.pSysMem = &psData;
+	initData2.pSysMem = &cbData;
 	initData2.SysMemPitch = 0;
 	initData2.SysMemSlicePitch = 0;
 

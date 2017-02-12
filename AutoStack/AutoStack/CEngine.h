@@ -330,7 +330,11 @@ public:
 		if (currentRenderPass->isPsCbPresent())
 		{
 			std::cout << "PS CB Present" << std::endl;
-			currentRenderPass->setColor(0, std::rand() % 255, 0);
+			currentRenderPass->setColor(255, std::rand() % 255, 0);
+			// Here you have to update constant buffer
+			pD3DImmediateContext->UpdateSubresource(currentRenderPass->getPsConstantBuffer(), 0, NULL, currentRenderPass->getConstantBufferData(), 0, 0);
+
+			// ----------
 			ID3D11Buffer* temp = currentRenderPass->getPsConstantBuffer();
 			pD3DImmediateContext->PSSetConstantBuffers(0, 1, &temp);
 		}
