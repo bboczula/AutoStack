@@ -93,6 +93,14 @@ public:
 		setEntryPoint(DEFAULT_ENTRY_POINT);
 		setShaderModel(DEFAULT_VS_SHADER_MODEL);
 	}
+	~VertexShader()
+	{
+		if (dxVertexShader)
+		{
+			dxVertexShader.Get()->Release();
+			dxVertexShader.Reset();
+		}
+	}
 	void create(ID3D11Device* device)
 	{
 		device->CreateVertexShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, dxVertexShader.GetAddressOf());
@@ -112,6 +120,14 @@ public:
 	{
 		setEntryPoint(DEFAULT_ENTRY_POINT);
 		setShaderModel(DEFAULT_PS_SHADER_MODEL);
+	}
+	~PixelShader()
+	{
+		if (dxPixelShader)
+		{
+			dxPixelShader.Get()->Release();
+			dxPixelShader.Reset();
+		}
 	}
 	void create(ID3D11Device* device)
 	{
