@@ -41,15 +41,11 @@ void CSolidColorRenderPass::compileShaders()
 {
 	pixelShader = new PixelShader();
 	pixelShader->loadShaderFromFile("ps.hlsl");
-	pixelShader->setEntryPoint("main");
-	pixelShader->setShaderModel("ps_4_0");
 	pixelShader->compile();
 	pixelShader->create(device);
 
 	vertexShader = new VertexShader();
 	vertexShader->loadShaderFromFile("vs.hlsl");
-	vertexShader->setEntryPoint("main");
-	vertexShader->setShaderModel("vs_4_0");
 	vertexShader->compile();
 	vertexShader->create(device);
 }

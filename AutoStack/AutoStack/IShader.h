@@ -8,6 +8,10 @@
 #include <iostream>
 #include <comdef.h>
 
+#define DEFAULT_ENTRY_POINT "main"
+#define DEFAULT_PS_SHADER_MODEL "ps_4_0"
+#define DEFAULT_VS_SHADER_MODEL "vs_4_0"
+
 class IShader
 {
 protected:
@@ -84,9 +88,14 @@ class VertexShader : public IShader
 private:
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> dxVertexShader;
 public:
+	VertexShader()
+	{
+		setEntryPoint(DEFAULT_ENTRY_POINT);
+		setShaderModel(DEFAULT_VS_SHADER_MODEL);
+	}
 	void create(ID3D11Device* device)
 	{
-		device->CreateVertexShader(getBlobPtr()->GetBufferPointer(), getBlobPtr()->GetBufferSize(), NULL, dxVertexShader.GetAddressOf());
+		device->CreateVertexShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, dxVertexShader.GetAddressOf());
 	}
 	ID3D11VertexShader* getDxShader()
 	{
@@ -99,10 +108,14 @@ class PixelShader : public IShader
 private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> dxPixelShader;
 public:
-
+	PixelShader()
+	{
+		setEntryPoint(DEFAULT_ENTRY_POINT);
+		setShaderModel(DEFAULT_PS_SHADER_MODEL);
+	}
 	void create(ID3D11Device* device)
 	{
-		device->CreatePixelShader(getBlobPtr()->GetBufferPointer(), getBlobPtr()->GetBufferSize(), NULL, dxPixelShader.GetAddressOf());
+		device->CreatePixelShader(shaderBlob->GetBufferPointer(), shaderBlob->GetBufferSize(), NULL, dxPixelShader.GetAddressOf());
 	}
 	ID3D11PixelShader* getDxShader()
 	{

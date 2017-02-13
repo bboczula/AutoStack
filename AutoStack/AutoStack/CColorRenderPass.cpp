@@ -16,15 +16,11 @@ void CColorRenderPass::compileShaders()
 {
 	pixelShader = new PixelShader();
 	pixelShader->loadShaderFromFile("ps_color.hlsl");
-	pixelShader->setEntryPoint("main");
-	pixelShader->setShaderModel("ps_4_0");
 	pixelShader->compile();
 	pixelShader->create(device);
 
 	vertexShader = new VertexShader();
 	vertexShader->loadShaderFromFile("vs_color.hlsl");
-	vertexShader->setEntryPoint("main");
-	vertexShader->setShaderModel("vs_4_0");
 	vertexShader->compile();
 	vertexShader->create(device);
 }
