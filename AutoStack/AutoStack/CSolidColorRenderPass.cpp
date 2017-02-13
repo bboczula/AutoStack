@@ -4,10 +4,9 @@ CSolidColorRenderPass::CSolidColorRenderPass(ID3D11Device* device) : CRenderPass
 {
 	std::cout << "Creating Solid Color Render Pass..." << std::endl;
 	
-	setColor(0, 255, 0);
-	cbData.r = static_cast<float>(activeColor.r / 255.0f);
-	cbData.g = static_cast<float>(activeColor.g / 255.0f);
-	cbData.b = static_cast<float>(activeColor.b / 255.0f);
+	cbData.r = static_cast<float>(0.0f / 255.0f);
+	cbData.g = static_cast<float>(255.0f / 255.0f);
+	cbData.b = static_cast<float>(0.0f / 255.0f);
 	compileShaders();
 	createInputLayout();
 	createConstantBuffers();
@@ -16,20 +15,21 @@ CSolidColorRenderPass::CSolidColorRenderPass(ID3D11Device* device) : CRenderPass
 CSolidColorRenderPass::~CSolidColorRenderPass()
 {
 	if (pixelShader)
+	{
 		delete pixelShader;
+	}
 
 	if (vertexShader)
+	{
 		delete vertexShader;
+	}
 }
 
 void CSolidColorRenderPass::setColor(int r, int g, int b)
 {
-	activeColor.r = r;
-	activeColor.g = g;
-	activeColor.b = b;
-	cbData.r = static_cast<float>(activeColor.r / 255.0f);
-	cbData.g = static_cast<float>(activeColor.g / 255.0f);
-	cbData.b = static_cast<float>(activeColor.b / 255.0f);
+	cbData.r = static_cast<float>(r / 255.0f);
+	cbData.g = static_cast<float>(g / 255.0f);
+	cbData.b = static_cast<float>(b / 255.0f);
 }
 
 SPsConstantBuffer * CSolidColorRenderPass::getConstantBufferData()

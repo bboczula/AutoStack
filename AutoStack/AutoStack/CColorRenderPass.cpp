@@ -10,6 +10,14 @@ CColorRenderPass::CColorRenderPass(ID3D11Device* device) :CRenderPass(device)
 
 CColorRenderPass::~CColorRenderPass()
 {
+	if (pixelShader)
+	{
+		delete pixelShader;
+	}
+	if (vertexShader)
+	{
+		delete vertexShader;
+	}
 }
 
 void CColorRenderPass::compileShaders()

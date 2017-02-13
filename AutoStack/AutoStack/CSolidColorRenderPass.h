@@ -14,7 +14,6 @@ public:
 	void setColor(int r, int g, int b);
 	SPsConstantBuffer* getConstantBufferData();
 private:
-	SColor activeColor;
 	SPsConstantBuffer cbData;
 	void compileShaders();
 	void createInputLayout();
