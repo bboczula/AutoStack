@@ -10,18 +10,15 @@
     <Filter Include="Plotter\Engine">
       <UniqueIdentifier>{181bb164-e892-4d79-84d1-579e46804700}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Plotter\RenderPass">
+      <UniqueIdentifier>{89eee38c-705b-4e79-ac3c-493d0cfbfe57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBaseWindow.h">
       <Filter>Plotter\Engine</Filter>
     </ClInclude>
     <ClInclude Include="CWindowsApp.h">
-      <Filter>Plotter\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="IShader.h">
-      <Filter>Plotter\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="SVertex.h">
       <Filter>Plotter\Engine</Filter>
     </ClInclude>
     <ClInclude Include="SPoint.h">
@@ -42,17 +39,29 @@
     <ClInclude Include="CList.h">
       <Filter>DataBase</Filter>
     </ClInclude>
-    <ClInclude Include="SPsConstantBuffer.h">
+    <ClInclude Include="SColor.h">
       <Filter>Plotter\Engine</Filter>
     </ClInclude>
     <ClInclude Include="CRenderPass.h">
-      <Filter>Plotter\Engine</Filter>
+      <Filter>Plotter\RenderPass</Filter>
     </ClInclude>
     <ClInclude Include="CSolidColorRenderPass.h">
-      <Filter>Plotter\Engine</Filter>
+      <Filter>Plotter\RenderPass</Filter>
     </ClInclude>
-    <ClInclude Include="SColor.h">
-      <Filter>Plotter\Engine</Filter>
+    <ClInclude Include="CColorRenderPass.h">
+      <Filter>Plotter\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="IShader.h">
+      <Filter>Plotter\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="SColorVertex.h">
+      <Filter>Plotter\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="SPsConstantBuffer.h">
+      <Filter>Plotter\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="SVertex.h">
+      <Filter>Plotter\RenderPass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -67,18 +76,29 @@
       <Filter>Plotter\Engine</Filter>
     </ClCompile>
     <ClCompile Include="CSolidColorRenderPass.cpp">
-      <Filter>Plotter\Engine</Filter>
+      <Filter>Plotter\RenderPass</Filter>
+    </ClCompile>
+    <ClCompile Include="CColorRenderPass.cpp">
+      <Filter>Plotter\RenderPass</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ps.hlsl">
-      <Filter>Plotter\Engine</Filter>
+      <Filter>Plotter\RenderPass</Filter>
+    </Text>
+    <Text Include="ps_color.hlsl">
+      <Filter>Plotter\RenderPass</Filter>
     </Text>
     <Text Include="vs.hlsl">
-      <Filter>Plotter\Engine</Filter>
+      <Filter>Plotter\RenderPass</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="wig_d.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="vs_color.hlsl">
+      <Filter>Plotter\RenderPass</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -10,6 +10,7 @@
 #include "SPoint.h"
 #include "SPsConstantBuffer.h"
 #include "CSolidColorRenderPass.h"
+#include "CColorRenderPass.h"
 
 class CEngine
 {
@@ -23,7 +24,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> pDepthStencilState;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView> pDepthStencilView;
 	HWND* parentWindowHandler;
-	CSolidColorRenderPass* currentRenderPass;
+	CRenderPass* currentRenderPass;
+	CSolidColorRenderPass* solidColorRenderPass;
+	CColorRenderPass* colorRenderPass;
 private:
 	void createDevice()
 	{
@@ -116,7 +119,10 @@ private:
 	}
 	void createRenderPass()
 	{
-		currentRenderPass = new CSolidColorRenderPass(pD3DDevice.Get());
+		solidColorRenderPass = new CSolidColorRenderPass(pD3DDevice.Get());
+		colorRenderPass = new CColorRenderPass(pD3DDevice.Get());
+
+		currentRenderPass = solidColorRenderPass;
 	}
 	void setupDepthStencil()
 	{
@@ -270,7 +276,7 @@ public:
 		const int TOP_MARGIN{ 5 };
 		const int BOTTOM_MARGIN{ 5 };
 
-		currentRenderPass->setColor(0, 255, 255);
+		solidColorRenderPass->setColor(0, 255, 255);
 		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
 		drawQuad(SPoint{ CANVAS_WIDTH - TOP_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
 		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), THICKNESS);
@@ -324,18 +330,27 @@ public:
 			std::cout << " > " << errMsg << std::endl;
 		}
 
+		// Draw Quad
+		pD3DImmediateContext->UpdateSubresource(currentRenderPass->getPsConstantBuffer(), 0, NULL, solidColorRenderPass->getConstantBufferData(), 0, 0);
+		draw(vertexBuffer, currentRenderPass);
+
+		// Release the buffers
+		vertexBuffer->Release();
+	}
+	void draw(ID3D11Buffer* vertexBuffer, CRenderPass* renderPass)
+	{
 		const UINT stride = sizeof(SVertex);
 		UINT offset = 0;
 		pD3DImmediateContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
-		if (currentRenderPass->isPsCbPresent())
+		if (renderPass->isPsCbPresent())
 		{
 			std::cout << "PS CB Present" << std::endl;
-			currentRenderPass->setColor(255, std::rand() % 255, 0);
+			//renderPass->setColor(255, std::rand() % 255, 0);
 			// Here you have to update constant buffer
-			pD3DImmediateContext->UpdateSubresource(currentRenderPass->getPsConstantBuffer(), 0, NULL, currentRenderPass->getConstantBufferData(), 0, 0);
+			//pD3DImmediateContext->UpdateSubresource(renderPass->getPsConstantBuffer(), 0, NULL, renderPass->getConstantBufferData(), 0, 0);
 
 			// ----------
-			ID3D11Buffer* temp = currentRenderPass->getPsConstantBuffer();
+			ID3D11Buffer* temp = renderPass->getPsConstantBuffer();
 			pD3DImmediateContext->PSSetConstantBuffers(0, 1, &temp);
 		}
 		else
@@ -344,8 +359,5 @@ public:
 		}
 		pD3DImmediateContext->OMSetRenderTargets(1, pD3DRenderTargetView.GetAddressOf(), pDepthStencilView.Get());
 		pD3DImmediateContext->Draw(4, 0);
-
-		// Release the buffers
-		vertexBuffer->Release();
 	}
 };

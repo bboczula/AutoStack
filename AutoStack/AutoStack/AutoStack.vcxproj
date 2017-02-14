@@ -149,12 +149,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CBaseWindow.h" />
+    <ClInclude Include="CColorRenderPass.h" />
     <ClInclude Include="CDataBase.h" />
     <ClInclude Include="CList.h" />
     <ClInclude Include="CRenderPass.h" />
     <ClInclude Include="CSolidColorRenderPass.h" />
     <ClInclude Include="CWindowsApp.h" />
     <ClInclude Include="SColor.h" />
+    <ClInclude Include="SColorVertex.h" />
     <ClInclude Include="SDate.h" />
     <ClInclude Include="IShader.h" />
     <ClInclude Include="SListItem.h" />
@@ -165,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBaseWindow.cpp" />
+    <ClCompile Include="CColorRenderPass.cpp" />
     <ClCompile Include="CEngine.h" />
     <ClCompile Include="CSolidColorRenderPass.cpp" />
     <ClCompile Include="CWindowsApp.cpp" />
@@ -176,6 +179,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="wig_d.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ps_color.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <FileType>Document</FileType>
+    </Text>
+    <FxCompile Include="vs_color.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
