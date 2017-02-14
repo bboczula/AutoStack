@@ -15,6 +15,10 @@ protected:
 	std::string entryPoint;
 	std::string shaderModel;
 	Microsoft::WRL::ComPtr<ID3DBlob> shaderBlob;
+	void addLine(std::string line)
+	{
+		source += line + "\n";
+	}
 public:
 	void compile()
 	{
@@ -26,22 +30,16 @@ public:
 		ID3DBlob* errorBlob = 0;
 		HRESULT result = D3DCompile2(source.c_str(), source.length(), nullptr, nullptr,
 			nullptr, entryPoint.c_str(), shaderModel.c_str(), flags, 0, 0, nullptr, 0, &shaderBlob, &errorBlob);
-		if (SUCCEEDED(result))
-		{
-			std::cout << "Vertex Shader creation succeded." << std::endl;
-		}
-		else
-		{
-			std::cout << "ERROR: Vertex Shader creation failed!" << std::endl;
-			LPCSTR errMsg = _com_error(result).ErrorMessage();
-			std::cout << " > " << errMsg << std::endl;
-		}
 
 		if (FAILED(result))
 		{
 			if (errorBlob)
 			{
-				MessageBoxA(nullptr, (char*)errorBlob->GetBufferPointer(), "VertexShader", MB_OK);
+				std::cout << "ERROR: Shader creation failed!" << std::endl;
+				LPCSTR errMsg = _com_error(result).ErrorMessage();
+				std::cout << " > " << errMsg << std::endl;
+
+				MessageBoxA(nullptr, (char*)errorBlob->GetBufferPointer(), "Shader", MB_OK);
 				OutputDebugStringA((char*)errorBlob->GetBufferPointer());
 				errorBlob->Release();
 			}
@@ -49,10 +47,6 @@ public:
 			if (shaderBlob)
 				shaderBlob.Get()->Release();
 		}
-	}
-	void addLine(std::string line)
-	{
-		source += line + "\n";
 	}
 	void setEntryPoint(std::string entryPoint)
 	{
