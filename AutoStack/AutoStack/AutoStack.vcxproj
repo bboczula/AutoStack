@@ -151,6 +151,7 @@
     <ClInclude Include="CBaseWindow.h" />
     <ClInclude Include="CColorRenderPass.h" />
     <ClInclude Include="CDataBase.h" />
+    <ClInclude Include="CGeometry.h" />
     <ClInclude Include="CList.h" />
     <ClInclude Include="CRenderPass.h" />
     <ClInclude Include="CSolidColorRenderPass.h" />

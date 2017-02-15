@@ -7,6 +7,7 @@
 
 #include "IShader.h"
 #include "SVertex.h"
+#include "SColorVertex.h"
 #include "SPoint.h"
 #include "SPsConstantBuffer.h"
 #include "CSolidColorRenderPass.h"
@@ -335,6 +336,49 @@ public:
 		draw(vertexBuffer, currentRenderPass);
 
 		// Release the buffers
+		vertexBuffer->Release();
+	}
+	void drawColorQuad(SPoint anchor, int width, int height)
+	{
+		float x = static_cast<float>(anchor.x);
+		float y = static_cast<float>(anchor.y);
+
+		const unsigned int NUM_OF_VERTICES{ 4 };
+
+		SColorVertex quad[NUM_OF_VERTICES];
+		quad[0] = { x, y, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f };
+		quad[1] = { x, y - height, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f };
+		quad[3] = { x + width, y - height, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f };
+		quad[2] = { x + width, y, 0.5f, 1.0f, 1.0f, 0.0f, 1.0f };
+
+		D3D11_BUFFER_DESC vertexBufferDescription;
+		ZeroMemory(&vertexBufferDescription, sizeof(D3D11_BUFFER_DESC));
+		vertexBufferDescription.Usage = D3D11_USAGE_DEFAULT;
+		vertexBufferDescription.ByteWidth = sizeof(SColorVertex) * NUM_OF_VERTICES;
+		vertexBufferDescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		vertexBufferDescription.CPUAccessFlags = 0;
+
+		D3D11_SUBRESOURCE_DATA initData;
+		initData.pSysMem = quad;
+		initData.SysMemPitch = 0;
+		initData.SysMemSlicePitch = 0;
+
+		ID3D11Buffer* vertexBuffer;
+		HRESULT result = pD3DDevice->CreateBuffer(&vertexBufferDescription, &initData, &vertexBuffer);
+		if (SUCCEEDED(result))
+		{
+#if defined _DEBUG
+			std::cout << "Vertex Buffer creation succeded." << std::endl;
+#endif
+		}
+		else
+		{
+			std::cout << "ERROR: Vertex Buffer creation failed!" << std::endl;
+			LPCSTR errMsg = _com_error(result).ErrorMessage();
+			std::cout << " > " << errMsg << std::endl;
+		}
+
+		draw(vertexBuffer, colorRenderPass);
 		vertexBuffer->Release();
 	}
 	void draw(ID3D11Buffer* vertexBuffer, CRenderPass* renderPass)

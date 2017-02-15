@@ -1,6 +1,6 @@
 #pragma once
 
-struct SVertex
+struct SColorVertex
 {
 	float x, y, z;
 	float r, g, b, a;
