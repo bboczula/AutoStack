@@ -269,31 +269,37 @@ public:
 		const int BOTTOM_MARGIN{ 5 };
 
 		solidColorRenderPass->setColor(85, 111, 138);
-		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
-		drawQuad(SPoint{ CANVAS_WIDTH - TOP_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
-		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), THICKNESS);
-		drawQuad(SPoint{ LEFT_MARGIN, TOP_MARGIN, 10 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), THICKNESS);
+		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 0 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
+		drawQuad(SPoint{ CANVAS_WIDTH - TOP_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 0 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
+		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 0 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), THICKNESS);
+		drawQuad(SPoint{ LEFT_MARGIN, TOP_MARGIN, 0 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), THICKNESS);
 
 		// Draw lines
 		int numOfSteps = 10;
 		int step = static_cast<int>(595 / numOfSteps);
 		for (int i = 0; i < numOfSteps; i++)
 		{
-			drawQuad(SPoint{ LEFT_MARGIN, 595 - (i * step), 10 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), 1);
+			drawQuad(SPoint{ LEFT_MARGIN, 595 - (i * step), 0 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), 1);
 		}
+	}
+	void drawQuadC(SPoint anchor, int width, int height, int r, int g, int b)
+	{
+		solidColorRenderPass->setColor(r, g, b);
+		drawQuad(anchor, width, height);
 	}
 	void drawQuad(SPoint anchor, int width, int height)
 	{
 		float x = static_cast<float>(anchor.x);
 		float y = static_cast<float>(anchor.y);
+		float z = static_cast<float>(anchor.z);
 
 		const unsigned int NUM_OF_VERTICES{ 4 };
 
 		SVertex quad[NUM_OF_VERTICES];
-		quad[0] = { x, y, 0.5f };
-		quad[1] = { x, y - height, 0.5f };
-		quad[3] = { x + width, y - height, 0.5f };
-		quad[2] = { x+width, y, 0.5f };
+		quad[0] = { x, y, z };
+		quad[1] = { x, y - height, z };
+		quad[3] = { x + width, y - height, z };
+		quad[2] = { x+width, y, z };
 
 		CGeometry geometry(pD3DDevice.Get());
 		geometry.setData(quad, NUM_OF_VERTICES, sizeof(SVertex));
@@ -356,27 +362,27 @@ public:
 			pD3DImmediateContext->VSSetShader(currentRenderPass->getVertexShader()->getDxShader(), nullptr, 0);
 			pD3DImmediateContext->IASetInputLayout(currentRenderPass->getInputLayout());
 			pD3DImmediateContext->IASetPrimitiveTopology(*(currentRenderPass->getTopology()));
-			// Update particular CB if needed
-			if (renderPass->isPsCbPresent())
-			{
-				std::cout << "PS CB Present" << std::endl;
-				//renderPass->setColor(255, std::rand() % 255, 0);
-				// Here you have to update constant buffer
-				//pD3DImmediateContext->UpdateSubresource(renderPass->getPsConstantBuffer(), 0, NULL, renderPass->getConstantBufferData(), 0, 0);
-
-				// ----------
-				pD3DImmediateContext->UpdateSubresource(currentRenderPass->getPsConstantBuffer(), 0, NULL, solidColorRenderPass->getConstantBufferData(), 0, 0);
-				ID3D11Buffer* temp = renderPass->getPsConstantBuffer();
-				pD3DImmediateContext->PSSetConstantBuffers(0, 1, &temp);
-			}
-			else
-			{
-				std::cout << "ERROR: PS CB NOT present!" << std::endl;
-			}
 		}
 		else
 		{
 			std::cout << "Render Pass change NOT needed!" << std::endl;
+		}
+		// Update particular CB if needed
+		if (currentRenderPass->isPsCbPresent())
+		{
+			std::cout << "PS CB Present" << std::endl;
+			//renderPass->setColor(255, std::rand() % 255, 0);
+			// Here you have to update constant buffer
+			//pD3DImmediateContext->UpdateSubresource(renderPass->getPsConstantBuffer(), 0, NULL, renderPass->getConstantBufferData(), 0, 0);
+
+			// ----------
+			pD3DImmediateContext->UpdateSubresource(currentRenderPass->getPsConstantBuffer(), 0, NULL, solidColorRenderPass->getConstantBufferData(), 0, 0);
+			ID3D11Buffer* temp = renderPass->getPsConstantBuffer();
+			pD3DImmediateContext->PSSetConstantBuffers(0, 1, &temp);
+		}
+		else
+		{
+			std::cout << "ERROR: PS CB NOT present!" << std::endl;
 		}
 
 		const UINT stride = geometry->getElementSize();

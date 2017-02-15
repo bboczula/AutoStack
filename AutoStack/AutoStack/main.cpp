@@ -11,7 +11,7 @@ class CWindowsTest : public CWindowsApp
 public:
 	CWindowsTest() : CWindowsApp(nullptr)
 	{
-		wig.buildFromFile("wig_d.csv");
+		wig.buildFromFile("cdr_d.csv");
 
 		registerWindow();
 		createWindow("AutoStack v.1.0", 800, 600);
@@ -22,7 +22,7 @@ private:
 	void initialize() override
 	{
 		const unsigned int NUM_OF_DAYS{ 50 };
-		const unsigned int START_AT{ 5500 };
+		const unsigned int START_AT{ 5540 };
 
 		SStock* temp = wig.at(START_AT);
 		double scopeMax = temp->max;
@@ -43,19 +43,39 @@ private:
 		}
 
 		// Draw chart
-		temp = wig.at(START_AT);
+		double scope = scopeMax - scopeMin;
 		engine->clearMainRenderTarget();
 		engine->drawFrame();
 		for (int i = 0; i < NUM_OF_DAYS; i++)
 		{
 			temp = wig.at(START_AT + i);
-			int close = static_cast<int>(temp->close - scopeMin);
-			int open = static_cast<int>(temp->open - scopeMin);
+			double openPos = (temp->open - scopeMin) / scope;
+			double closePos = (temp->close - scopeMin) / scope;
 
-			SPoint p{ 100 + (15 * i), open, 10 };
-			engine->drawColorQuad(p, 10, (p.y - close));
+			// Draw min-max
+			double maxPos = (temp->max - scopeMin) / scope;
+			double minPos = (temp->min - scopeMin) / scope;
+			SPoint x{ 14 + (15 * i), maxPos * 600, 0.5 };
+			engine->drawQuadC(x, 2, (x.y - (minPos * 600)), 0, 0, 0);
+
+			int close = static_cast<int>(closePos * 600);
+			int open = static_cast<int>(openPos * 600);
+			if (openPos > closePos)
+			{
+				SPoint p{ 10 + (15 * i), open, 0 };
+				engine->drawQuadC(p, 10, (p.y - close), 255, 0, 0);
+			}
+			else
+			{
+				int temp = open;
+				open = close;
+				close = temp;
+
+				SPoint p{ 10 + (15 * i), open, -0.5 };
+				engine->drawQuadC(p, 10, (p.y - close), 0, 255, 0);
+			}
 		}
-		engine->drawTextureQuad({ 200, 300, 0 }, 200, 200);
+		//engine->drawTextureQuad({ 200, 300, 0 }, 200, 200);
 		engine->present();
 	}
 	void update() override
