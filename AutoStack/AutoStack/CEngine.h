@@ -12,6 +12,7 @@
 #include "SPsConstantBuffer.h"
 #include "CSolidColorRenderPass.h"
 #include "CColorRenderPass.h"
+#include "CGeometry.h"
 
 class CEngine
 {
@@ -304,39 +305,13 @@ public:
 		quad[3] = { x + width, y - height, 0.5f };
 		quad[2] = { x+width, y, 0.5f };
 
-		D3D11_BUFFER_DESC vertexBufferDescription;
-		ZeroMemory(&vertexBufferDescription, sizeof(D3D11_BUFFER_DESC));
-		vertexBufferDescription.Usage = D3D11_USAGE_DEFAULT;
-		vertexBufferDescription.ByteWidth = sizeof(SVertex) * NUM_OF_VERTICES;
-		vertexBufferDescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		vertexBufferDescription.CPUAccessFlags = 0;
-
-		D3D11_SUBRESOURCE_DATA initData;
-		initData.pSysMem = quad;
-		initData.SysMemPitch = 0;
-		initData.SysMemSlicePitch = 0;
-
-		ID3D11Buffer* vertexBuffer;
-		HRESULT result = pD3DDevice->CreateBuffer(&vertexBufferDescription, &initData, &vertexBuffer);
-		if (SUCCEEDED(result))
-		{
-#if defined _DEBUG
-			std::cout << "Vertex Buffer creation succeded." << std::endl;
-#endif
-		}
-		else
-		{
-			std::cout << "ERROR: Vertex Buffer creation failed!" << std::endl;
-			LPCSTR errMsg = _com_error(result).ErrorMessage();
-			std::cout << " > " << errMsg << std::endl;
-		}
+		CGeometry geometry(pD3DDevice.Get());
+		geometry.setData(quad, NUM_OF_VERTICES, sizeof(SVertex));
+		geometry.compile();
 
 		// Draw Quad
 		pD3DImmediateContext->UpdateSubresource(currentRenderPass->getPsConstantBuffer(), 0, NULL, solidColorRenderPass->getConstantBufferData(), 0, 0);
-		draw(vertexBuffer, currentRenderPass);
-
-		// Release the buffers
-		vertexBuffer->Release();
+		draw(&geometry, currentRenderPass);
 	}
 	void drawColorQuad(SPoint anchor, int width, int height)
 	{
@@ -351,41 +326,16 @@ public:
 		quad[3] = { x + width, y - height, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f };
 		quad[2] = { x + width, y, 0.5f, 1.0f, 1.0f, 0.0f, 1.0f };
 
-		D3D11_BUFFER_DESC vertexBufferDescription;
-		ZeroMemory(&vertexBufferDescription, sizeof(D3D11_BUFFER_DESC));
-		vertexBufferDescription.Usage = D3D11_USAGE_DEFAULT;
-		vertexBufferDescription.ByteWidth = sizeof(SColorVertex) * NUM_OF_VERTICES;
-		vertexBufferDescription.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		vertexBufferDescription.CPUAccessFlags = 0;
+		CGeometry geometry(pD3DDevice.Get());
+		geometry.setData(quad, NUM_OF_VERTICES, sizeof(SColorVertex));
 
-		D3D11_SUBRESOURCE_DATA initData;
-		initData.pSysMem = quad;
-		initData.SysMemPitch = 0;
-		initData.SysMemSlicePitch = 0;
-
-		ID3D11Buffer* vertexBuffer;
-		HRESULT result = pD3DDevice->CreateBuffer(&vertexBufferDescription, &initData, &vertexBuffer);
-		if (SUCCEEDED(result))
-		{
-#if defined _DEBUG
-			std::cout << "Vertex Buffer creation succeded." << std::endl;
-#endif
-		}
-		else
-		{
-			std::cout << "ERROR: Vertex Buffer creation failed!" << std::endl;
-			LPCSTR errMsg = _com_error(result).ErrorMessage();
-			std::cout << " > " << errMsg << std::endl;
-		}
-
-		draw(vertexBuffer, colorRenderPass);
-		vertexBuffer->Release();
+		draw(&geometry, colorRenderPass);
 	}
-	void draw(ID3D11Buffer* vertexBuffer, CRenderPass* renderPass)
+	void draw(CGeometry* geometry, CRenderPass* renderPass)
 	{
-		const UINT stride = sizeof(SVertex);
+		const UINT stride = geometry->getElementSize();
 		UINT offset = 0;
-		pD3DImmediateContext->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+		pD3DImmediateContext->IASetVertexBuffers(0, 1, geometry->getVertexBufferPtr(), &stride, &offset);
 		if (renderPass->isPsCbPresent())
 		{
 			std::cout << "PS CB Present" << std::endl;
