@@ -13,6 +13,7 @@ public:
 	~CSolidColorRenderPass();
 	void setColor(int r, int g, int b);
 	SPsConstantBuffer* getConstantBufferData();
+	void bind(ID3D11DeviceContext* immediateContext);
 private:
 	SPsConstantBuffer cbData;
 	void compileShaders();

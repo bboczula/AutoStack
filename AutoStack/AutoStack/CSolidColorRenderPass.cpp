@@ -37,6 +37,10 @@ SPsConstantBuffer * CSolidColorRenderPass::getConstantBufferData()
 	return &cbData;
 }
 
+void CSolidColorRenderPass::bind(ID3D11DeviceContext * immediateContext)
+{
+}
+
 void CSolidColorRenderPass::compileShaders()
 {
 	pixelShader = new PixelShader();

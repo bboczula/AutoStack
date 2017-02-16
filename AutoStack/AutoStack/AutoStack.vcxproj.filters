@@ -66,6 +66,12 @@
     <ClInclude Include="CGeometry.h">
       <Filter>Plotter\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="STextureVertex.h">
+      <Filter>Plotter\RenderPass</Filter>
+    </ClInclude>
+    <ClInclude Include="CTextureRenderPass.h">
+      <Filter>Plotter\RenderPass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CBaseWindow.cpp">
@@ -84,6 +90,9 @@
     <ClCompile Include="CColorRenderPass.cpp">
       <Filter>Plotter\RenderPass</Filter>
     </ClCompile>
+    <ClCompile Include="CTextureRenderPass.cpp">
+      <Filter>Plotter\RenderPass</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ps.hlsl">
@@ -93,6 +102,12 @@
       <Filter>Plotter\RenderPass</Filter>
     </Text>
     <Text Include="vs.hlsl">
+      <Filter>Plotter\RenderPass</Filter>
+    </Text>
+    <Text Include="vs_texture.hlsl">
+      <Filter>Plotter\RenderPass</Filter>
+    </Text>
+    <Text Include="ps_texture.hlsl">
       <Filter>Plotter\RenderPass</Filter>
     </Text>
   </ItemGroup>

@@ -1,6 +1,6 @@
 #include "CColorRenderPass.h"
 
-CColorRenderPass::CColorRenderPass(ID3D11Device* device) :CRenderPass(device)
+CColorRenderPass::CColorRenderPass(ID3D11Device* device) : CRenderPass(device)
 {
 	std::cout << "Creating Color Render Pass..." << std::endl;
 
@@ -55,4 +55,8 @@ void CColorRenderPass::createInputLayout()
 		LPCSTR errMsg = _com_error(result).ErrorMessage();
 		std::cout << " > " << errMsg << std::endl;
 	}
+}
+
+void CColorRenderPass::bind(ID3D11DeviceContext * deviceContext)
+{
 }

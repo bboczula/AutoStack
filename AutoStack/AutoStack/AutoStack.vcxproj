@@ -155,6 +155,7 @@
     <ClInclude Include="CList.h" />
     <ClInclude Include="CRenderPass.h" />
     <ClInclude Include="CSolidColorRenderPass.h" />
+    <ClInclude Include="CTextureRenderPass.h" />
     <ClInclude Include="CWindowsApp.h" />
     <ClInclude Include="SColor.h" />
     <ClInclude Include="SColorVertex.h" />
@@ -164,6 +165,7 @@
     <ClInclude Include="SPoint.h" />
     <ClInclude Include="SPsConstantBuffer.h" />
     <ClInclude Include="SStock.h" />
+    <ClInclude Include="STextureVertex.h" />
     <ClInclude Include="SVertex.h" />
   </ItemGroup>
   <ItemGroup>
@@ -171,6 +173,7 @@
     <ClCompile Include="CColorRenderPass.cpp" />
     <ClCompile Include="CEngine.h" />
     <ClCompile Include="CSolidColorRenderPass.cpp" />
+    <ClCompile Include="CTextureRenderPass.cpp" />
     <ClCompile Include="CWindowsApp.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -182,8 +185,14 @@
     <None Include="wig_d.csv" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="vs_texture.hlsl">
+      <FileType>Document</FileType>
+    </Text>
     <Text Include="ps_color.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <FileType>Document</FileType>
+    </Text>
+    <Text Include="ps_texture.hlsl">
       <FileType>Document</FileType>
     </Text>
     <FxCompile Include="vs_color.hlsl">

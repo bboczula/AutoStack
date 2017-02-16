@@ -39,4 +39,6 @@ public:
 	{
 		return psConstantBuffer;
 	}
+public:
+	virtual void bind(ID3D11DeviceContext* immediateContext) = 0;
 };

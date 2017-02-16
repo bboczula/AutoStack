@@ -11,4 +11,5 @@ public:
 private:
 	void compileShaders();
 	void createInputLayout();
+	void bind(ID3D11DeviceContext* deviceContext);
 };

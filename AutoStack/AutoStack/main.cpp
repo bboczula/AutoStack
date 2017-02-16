@@ -52,15 +52,9 @@ private:
 			int close = static_cast<int>((temp->min * 600.0) / scopeMax);
 			int open = static_cast<int>((temp->max * 600.0) / scopeMax);
 			SPoint p{ 100 + (15 * i), open, 10 };
-			if (open > close)
-			{
-				engine->drawColorQuad(p, 10, (p.y - close) * 15);
-			}
-			else
-			{
-				engine->drawColorQuad(p, 10, (p.y - close) * 15);
-			}
+			engine->drawColorQuad(p, 10, (p.y - close) * 15);
 		}
+		engine->drawTextureQuad({ 200, 300, 0 }, 200, 200);
 		engine->present();
 	}
 	void update() override

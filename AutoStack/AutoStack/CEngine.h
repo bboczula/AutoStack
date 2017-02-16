@@ -8,10 +8,12 @@
 #include "IShader.h"
 #include "SVertex.h"
 #include "SColorVertex.h"
+#include "STextureVertex.h"
 #include "SPoint.h"
 #include "SPsConstantBuffer.h"
 #include "CSolidColorRenderPass.h"
 #include "CColorRenderPass.h"
+#include "CTextureRenderPass.h"
 #include "CGeometry.h"
 
 class CEngine
@@ -29,6 +31,7 @@ private:
 	CRenderPass* currentRenderPass;
 	CSolidColorRenderPass* solidColorRenderPass;
 	CColorRenderPass* colorRenderPass;
+	CTextureRenderPass* textureRenderPass;
 private:
 	void createDevice()
 	{
@@ -123,8 +126,7 @@ private:
 	{
 		solidColorRenderPass = new CSolidColorRenderPass(pD3DDevice.Get());
 		colorRenderPass = new CColorRenderPass(pD3DDevice.Get());
-
-		//currentRenderPass = solidColorRenderPass;
+		textureRenderPass = new CTextureRenderPass(pD3DDevice.Get());
 	}
 	void setupDepthStencil()
 	{
@@ -204,14 +206,6 @@ private:
 			std::cout << " > " << errMsg << std::endl;
 		}
 	}
-	void setupInputAssemblerStage()
-	{
-	}
-	void setupShaders()
-	{
-		//pD3DImmediateContext->VSSetShader(currentRenderPass->getVertexShader()->getDxShader(), nullptr, 0);
-		//pD3DImmediateContext->PSSetShader(currentRenderPass->getPixelShader()->getDxShader(), nullptr, 0);
-	}
 	void setupRasterizerStage()
 	{
 		D3D11_RASTERIZER_DESC rasterizerDescription;
@@ -248,16 +242,14 @@ public:
 		createRenderPass();
 		createMainRenderTarget();
 		setupDepthStencil();
-		setupInputAssemblerStage();
 		setupRasterizerStage();
 		setupViewport();
-		setupShaders();
 		clearMainRenderTarget();
 		present();
 	}
 	void clearMainRenderTarget()
 	{
-		float color[4]{ 234.0f / 255.0f, 247.0f / 255.0f, 217.0f / 255.0f, 1.0f };
+		float color[4]{ 69.0f / 255.0f, 91.0f / 255.0f, 114.0f / 255.0f, 1.0f };
 		pD3DImmediateContext->ClearRenderTargetView(pD3DRenderTargetView.Get(), color);
 		pD3DImmediateContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
@@ -276,7 +268,7 @@ public:
 		const int TOP_MARGIN{ 5 };
 		const int BOTTOM_MARGIN{ 5 };
 
-		solidColorRenderPass->setColor(195, 214, 170);
+		solidColorRenderPass->setColor(85, 111, 138);
 		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
 		drawQuad(SPoint{ CANVAS_WIDTH - TOP_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
 		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), THICKNESS);
@@ -332,6 +324,26 @@ public:
 
 		draw(&geometry, colorRenderPass);
 	}
+	void drawTextureQuad(SPoint anchor, int width, int height)
+	{
+		float x = static_cast<float>(anchor.x);
+		float y = static_cast<float>(anchor.y);
+		float z = static_cast<float>(anchor.z);
+
+		const unsigned int NUM_OF_VERTICES{ 4 };
+
+		STextureVertex quad[NUM_OF_VERTICES];
+		quad[0] = { x, y, z, 1.0f, 0.0f };
+		quad[1] = { x, y - height, z, 1.0f, 1.0f };
+		quad[3] = { x + width, y - height, z, 0.0f, 1.0f };
+		quad[2] = { x + width, y, z, 0.0f, 0.0f };
+
+		CGeometry geometry(pD3DDevice.Get());
+		geometry.setData(quad, NUM_OF_VERTICES, sizeof(STextureVertex));
+		geometry.compile();
+
+		draw(&geometry, textureRenderPass);
+	}
 	void draw(CGeometry* geometry, CRenderPass* renderPass)
 	{
 		// Switch Render Passes if needed
@@ -339,6 +351,7 @@ public:
 		{
 			std::cout << "Render Pass change needed!" << std::endl;
 			currentRenderPass = renderPass;
+			currentRenderPass->bind(pD3DImmediateContext.Get());
 			pD3DImmediateContext->PSSetShader(currentRenderPass->getPixelShader()->getDxShader(), nullptr, 0);
 			pD3DImmediateContext->VSSetShader(currentRenderPass->getVertexShader()->getDxShader(), nullptr, 0);
 			pD3DImmediateContext->IASetInputLayout(currentRenderPass->getInputLayout());
