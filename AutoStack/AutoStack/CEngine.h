@@ -124,7 +124,7 @@ private:
 		solidColorRenderPass = new CSolidColorRenderPass(pD3DDevice.Get());
 		colorRenderPass = new CColorRenderPass(pD3DDevice.Get());
 
-		currentRenderPass = solidColorRenderPass;
+		//currentRenderPass = solidColorRenderPass;
 	}
 	void setupDepthStencil()
 	{
@@ -206,13 +206,11 @@ private:
 	}
 	void setupInputAssemblerStage()
 	{
-		pD3DImmediateContext->IASetInputLayout(currentRenderPass->getInputLayout());
-		pD3DImmediateContext->IASetPrimitiveTopology(*(currentRenderPass->getTopology()));
 	}
 	void setupShaders()
 	{
-		pD3DImmediateContext->VSSetShader(currentRenderPass->getVertexShader()->getDxShader(), nullptr, 0);
-		pD3DImmediateContext->PSSetShader(currentRenderPass->getPixelShader()->getDxShader(), nullptr, 0);
+		//pD3DImmediateContext->VSSetShader(currentRenderPass->getVertexShader()->getDxShader(), nullptr, 0);
+		//pD3DImmediateContext->PSSetShader(currentRenderPass->getPixelShader()->getDxShader(), nullptr, 0);
 	}
 	void setupRasterizerStage()
 	{
@@ -242,7 +240,7 @@ private:
 		pD3DImmediateContext->RSSetViewports(1, &viewport);
 	}
 public:
-	CEngine(HWND* hwnd) : parentWindowHandler(hwnd)
+	CEngine(HWND* hwnd) : parentWindowHandler(hwnd), currentRenderPass(nullptr)
 	{
 		createDevice();
 		createDxgiFactory();
@@ -259,7 +257,7 @@ public:
 	}
 	void clearMainRenderTarget()
 	{
-		float color[4]{ 0.2431f, 0.5843f, 0.7568f, 1.0f };
+		float color[4]{ 234.0f / 255.0f, 247.0f / 255.0f, 217.0f / 255.0f, 1.0f };
 		pD3DImmediateContext->ClearRenderTargetView(pD3DRenderTargetView.Get(), color);
 		pD3DImmediateContext->ClearDepthStencilView(pDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
@@ -278,7 +276,7 @@ public:
 		const int TOP_MARGIN{ 5 };
 		const int BOTTOM_MARGIN{ 5 };
 
-		solidColorRenderPass->setColor(0, 255, 255);
+		solidColorRenderPass->setColor(195, 214, 170);
 		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
 		drawQuad(SPoint{ CANVAS_WIDTH - TOP_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
 		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 10 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), THICKNESS);
@@ -310,8 +308,8 @@ public:
 		geometry.compile();
 
 		// Draw Quad
-		pD3DImmediateContext->UpdateSubresource(currentRenderPass->getPsConstantBuffer(), 0, NULL, solidColorRenderPass->getConstantBufferData(), 0, 0);
-		draw(&geometry, currentRenderPass);
+		//pD3DImmediateContext->UpdateSubresource(currentRenderPass->getPsConstantBuffer(), 0, NULL, solidColorRenderPass->getConstantBufferData(), 0, 0);
+		draw(&geometry, solidColorRenderPass);
 	}
 	void drawColorQuad(SPoint anchor, int width, int height)
 	{
@@ -320,38 +318,58 @@ public:
 
 		const unsigned int NUM_OF_VERTICES{ 4 };
 
+#define TOP_COLOR 77.0f / 255.0f, 100.0f / 255.0f, 45.0f / 255.0f, 1.0f
+#define BOTTOM_COLOR 40.0f / 255.0f, 58.0f / 255.0f, 16.0f / 255.0f, 1.0f
 		SColorVertex quad[NUM_OF_VERTICES];
-		quad[0] = { x, y, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f };
-		quad[1] = { x, y - height, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f };
-		quad[3] = { x + width, y - height, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f };
-		quad[2] = { x + width, y, 0.5f, 1.0f, 1.0f, 0.0f, 1.0f };
+		quad[0] = { x, y, 0.5f, BOTTOM_COLOR };
+		quad[1] = { x, y - height, 0.5f, TOP_COLOR };
+		quad[3] = { x + width, y - height, 0.5f, TOP_COLOR };
+		quad[2] = { x + width, y, 0.5f, BOTTOM_COLOR };
 
 		CGeometry geometry(pD3DDevice.Get());
 		geometry.setData(quad, NUM_OF_VERTICES, sizeof(SColorVertex));
+		geometry.compile();
 
 		draw(&geometry, colorRenderPass);
 	}
 	void draw(CGeometry* geometry, CRenderPass* renderPass)
 	{
-		const UINT stride = geometry->getElementSize();
-		UINT offset = 0;
-		pD3DImmediateContext->IASetVertexBuffers(0, 1, geometry->getVertexBufferPtr(), &stride, &offset);
-		if (renderPass->isPsCbPresent())
+		// Switch Render Passes if needed
+		if (renderPass != currentRenderPass)
 		{
-			std::cout << "PS CB Present" << std::endl;
-			//renderPass->setColor(255, std::rand() % 255, 0);
-			// Here you have to update constant buffer
-			//pD3DImmediateContext->UpdateSubresource(renderPass->getPsConstantBuffer(), 0, NULL, renderPass->getConstantBufferData(), 0, 0);
+			std::cout << "Render Pass change needed!" << std::endl;
+			currentRenderPass = renderPass;
+			pD3DImmediateContext->PSSetShader(currentRenderPass->getPixelShader()->getDxShader(), nullptr, 0);
+			pD3DImmediateContext->VSSetShader(currentRenderPass->getVertexShader()->getDxShader(), nullptr, 0);
+			pD3DImmediateContext->IASetInputLayout(currentRenderPass->getInputLayout());
+			pD3DImmediateContext->IASetPrimitiveTopology(*(currentRenderPass->getTopology()));
+			// Update particular CB if needed
+			if (renderPass->isPsCbPresent())
+			{
+				std::cout << "PS CB Present" << std::endl;
+				//renderPass->setColor(255, std::rand() % 255, 0);
+				// Here you have to update constant buffer
+				//pD3DImmediateContext->UpdateSubresource(renderPass->getPsConstantBuffer(), 0, NULL, renderPass->getConstantBufferData(), 0, 0);
 
-			// ----------
-			ID3D11Buffer* temp = renderPass->getPsConstantBuffer();
-			pD3DImmediateContext->PSSetConstantBuffers(0, 1, &temp);
+				// ----------
+				pD3DImmediateContext->UpdateSubresource(currentRenderPass->getPsConstantBuffer(), 0, NULL, solidColorRenderPass->getConstantBufferData(), 0, 0);
+				ID3D11Buffer* temp = renderPass->getPsConstantBuffer();
+				pD3DImmediateContext->PSSetConstantBuffers(0, 1, &temp);
+			}
+			else
+			{
+				std::cout << "ERROR: PS CB NOT present!" << std::endl;
+			}
 		}
 		else
 		{
-			std::cout << "ERROR: PS CB NOT present!" << std::endl;
+			std::cout << "Render Pass change NOT needed!" << std::endl;
 		}
+
+		const UINT stride = geometry->getElementSize();
+		UINT offset = 0;
+		pD3DImmediateContext->IASetVertexBuffers(0, 1, geometry->getVertexBufferPtr(), &stride, &offset);
 		pD3DImmediateContext->OMSetRenderTargets(1, pD3DRenderTargetView.GetAddressOf(), pDepthStencilView.Get());
-		pD3DImmediateContext->Draw(4, 0);
+		pD3DImmediateContext->Draw(geometry->size(), 0);
 	}
 };

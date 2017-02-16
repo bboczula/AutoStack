@@ -54,11 +54,11 @@ private:
 			SPoint p{ 100 + (15 * i), open, 10 };
 			if (open > close)
 			{
-				engine->drawQuad(p, 10, (p.y - close) * 15);
+				engine->drawColorQuad(p, 10, (p.y - close) * 15);
 			}
 			else
 			{
-				engine->drawQuad(p, 10, (p.y - close) * 15);
+				engine->drawColorQuad(p, 10, (p.y - close) * 15);
 			}
 		}
 		engine->present();
