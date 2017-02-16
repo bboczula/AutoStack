@@ -21,7 +21,7 @@ public:
 private:
 	void initialize() override
 	{
-		const unsigned int NUM_OF_DAYS{ 40 };
+		const unsigned int NUM_OF_DAYS{ 50 };
 		const unsigned int START_AT{ 5500 };
 
 		SStock* temp = wig.at(START_AT);
@@ -49,10 +49,11 @@ private:
 		for (int i = 0; i < NUM_OF_DAYS; i++)
 		{
 			temp = wig.at(START_AT + i);
-			int close = static_cast<int>((temp->min * 600.0) / scopeMax);
-			int open = static_cast<int>((temp->max * 600.0) / scopeMax);
+			int close = static_cast<int>(temp->close - scopeMin);
+			int open = static_cast<int>(temp->open - scopeMin);
+
 			SPoint p{ 100 + (15 * i), open, 10 };
-			engine->drawColorQuad(p, 10, (p.y - close) * 15);
+			engine->drawColorQuad(p, 10, (p.y - close));
 		}
 		engine->drawTextureQuad({ 200, 300, 0 }, 200, 200);
 		engine->present();
