@@ -16,4 +16,5 @@ private:
 	void createInputLayout();
 	void createTexture();
 	void bind(ID3D11DeviceContext* immediateContext);
+	void update(ID3D11DeviceContext* immediateContext);
 };

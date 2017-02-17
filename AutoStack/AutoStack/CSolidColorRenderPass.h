@@ -14,6 +14,7 @@ public:
 	void setColor(int r, int g, int b);
 	SPsConstantBuffer* getConstantBufferData();
 	void bind(ID3D11DeviceContext* immediateContext);
+	void update(ID3D11DeviceContext* immediateContext);
 private:
 	SPsConstantBuffer cbData;
 	void compileShaders();

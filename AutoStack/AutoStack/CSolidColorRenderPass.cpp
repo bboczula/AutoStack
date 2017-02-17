@@ -39,6 +39,16 @@ SPsConstantBuffer * CSolidColorRenderPass::getConstantBufferData()
 
 void CSolidColorRenderPass::bind(ID3D11DeviceContext * immediateContext)
 {
+	immediateContext->PSSetShader(pixelShader->getDxShader(), nullptr, 0);
+	immediateContext->PSSetConstantBuffers(0, 1, &psConstantBuffer);
+	immediateContext->VSSetShader(vertexShader->getDxShader(), nullptr, 0);
+	immediateContext->IASetInputLayout(inputLayout);
+	immediateContext->IASetPrimitiveTopology(topology);
+}
+
+void CSolidColorRenderPass::update(ID3D11DeviceContext * immediateContext)
+{
+	immediateContext->UpdateSubresource(psConstantBuffer, 0, NULL, &cbData, 0, 0);
 }
 
 void CSolidColorRenderPass::compileShaders()

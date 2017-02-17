@@ -12,4 +12,5 @@ private:
 	void compileShaders();
 	void createInputLayout();
 	void bind(ID3D11DeviceContext* deviceContext);
+	void update(ID3D11DeviceContext* immediateContext);
 };

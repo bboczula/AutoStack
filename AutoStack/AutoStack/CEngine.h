@@ -307,7 +307,6 @@ public:
 		geometry.compile();
 
 		// Draw Quad
-		//pD3DImmediateContext->UpdateSubresource(currentRenderPass->getPsConstantBuffer(), 0, NULL, solidColorRenderPass->getConstantBufferData(), 0, 0);
 		draw(&geometry, solidColorRenderPass);
 	}
 	void drawColorQuad(SPoint anchor, int width, int height)
@@ -359,32 +358,10 @@ public:
 			std::cout << "Render Pass change needed!" << std::endl;
 			currentRenderPass = renderPass;
 			currentRenderPass->bind(pD3DImmediateContext.Get());
-			pD3DImmediateContext->PSSetShader(currentRenderPass->getPixelShader()->getDxShader(), nullptr, 0);
-			pD3DImmediateContext->VSSetShader(currentRenderPass->getVertexShader()->getDxShader(), nullptr, 0);
-			pD3DImmediateContext->IASetInputLayout(currentRenderPass->getInputLayout());
-			pD3DImmediateContext->IASetPrimitiveTopology(*(currentRenderPass->getTopology()));
 		}
-		else
-		{
-			std::cout << "Render Pass change NOT needed!" << std::endl;
-		}
-		// Update particular CB if needed
-		if (currentRenderPass->isPsCbPresent())
-		{
-			std::cout << "PS CB Present" << std::endl;
-			//renderPass->setColor(255, std::rand() % 255, 0);
-			// Here you have to update constant buffer
-			//pD3DImmediateContext->UpdateSubresource(renderPass->getPsConstantBuffer(), 0, NULL, renderPass->getConstantBufferData(), 0, 0);
 
-			// ----------
-			pD3DImmediateContext->UpdateSubresource(currentRenderPass->getPsConstantBuffer(), 0, NULL, solidColorRenderPass->getConstantBufferData(), 0, 0);
-			ID3D11Buffer* temp = renderPass->getPsConstantBuffer();
-			pD3DImmediateContext->PSSetConstantBuffers(0, 1, &temp);
-		}
-		else
-		{
-			std::cout << "ERROR: PS CB NOT present!" << std::endl;
-		}
+		// Update if necessary
+		currentRenderPass->update(pD3DImmediateContext.Get());
 
 		const UINT stride = geometry->getElementSize();
 		UINT offset = 0;

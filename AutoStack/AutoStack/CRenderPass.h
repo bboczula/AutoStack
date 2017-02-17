@@ -41,4 +41,5 @@ public:
 	}
 public:
 	virtual void bind(ID3D11DeviceContext* immediateContext) = 0;
+	virtual void update(ID3D11DeviceContext* immediateContext) = 0;
 };

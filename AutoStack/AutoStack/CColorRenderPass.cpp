@@ -57,6 +57,14 @@ void CColorRenderPass::createInputLayout()
 	}
 }
 
-void CColorRenderPass::bind(ID3D11DeviceContext * deviceContext)
+void CColorRenderPass::bind(ID3D11DeviceContext * immediateContext)
+{
+	immediateContext->PSSetShader(pixelShader->getDxShader(), nullptr, 0);
+	immediateContext->VSSetShader(vertexShader->getDxShader(), nullptr, 0);
+	immediateContext->IASetInputLayout(inputLayout);
+	immediateContext->IASetPrimitiveTopology(topology);
+}
+
+void CColorRenderPass::update(ID3D11DeviceContext * immediateContext)
 {
 }

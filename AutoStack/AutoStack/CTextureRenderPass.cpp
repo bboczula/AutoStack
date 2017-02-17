@@ -128,3 +128,7 @@ void CTextureRenderPass::bind(ID3D11DeviceContext * immediateContext)
 	immediateContext->PSSetShaderResources(0, 1, &srv);
 	immediateContext->PSSetSamplers(0, 1, &samplerState);
 }
+
+void CTextureRenderPass::update(ID3D11DeviceContext * immediateContext)
+{
+}
