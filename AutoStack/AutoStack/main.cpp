@@ -53,17 +53,19 @@ private:
 			double closePos = (temp->close - scopeMin) / scope;
 
 			// Draw min-max
+			const int LEVEL_1{ 119 };
+			const int LEVEL_2{ 118 };
 			double maxPos = (temp->max - scopeMin) / scope;
 			double minPos = (temp->min - scopeMin) / scope;
-			SPoint x{ 14 + (15 * i), maxPos * 600, 0.5 };
-			engine->drawQuadC(x, 2, (x.y - (minPos * 600)), 0, 0, 0);
+			SPoint x{ 15 + (15 * i), maxPos * 600, LEVEL_1 };
+			engine->drawQuadC(x, 1, (x.y - (minPos * 600)), 255, 255, 255);
 
 			int close = static_cast<int>(closePos * 600);
 			int open = static_cast<int>(openPos * 600);
 			if (openPos > closePos)
 			{
-				SPoint p{ 10 + (15 * i), open, 0 };
-				engine->drawQuadC(p, 10, (p.y - close), 255, 0, 0);
+				SPoint p{ 10 + (15 * i), open, LEVEL_2 };
+				engine->drawQuadC(p, 10, (p.y - close), 255, 192, 0);
 			}
 			else
 			{
@@ -71,8 +73,8 @@ private:
 				open = close;
 				close = temp;
 
-				SPoint p{ 10 + (15 * i), open, -0.5 };
-				engine->drawQuadC(p, 10, (p.y - close), 0, 255, 0);
+				SPoint p{ 10 + (15 * i), open, LEVEL_2 };
+				engine->drawQuadC(p, 10, (p.y - close), 172, 211, 254);
 			}
 		}
 		//engine->drawTextureQuad({ 200, 300, 0 }, 200, 200);

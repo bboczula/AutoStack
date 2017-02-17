@@ -267,19 +267,20 @@ public:
 		const int RIGHT_MARGIN{ 5 };
 		const int TOP_MARGIN{ 5 };
 		const int BOTTOM_MARGIN{ 5 };
+		const int Z{ 120 };
 
 		solidColorRenderPass->setColor(85, 111, 138);
-		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 0 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
-		drawQuad(SPoint{ CANVAS_WIDTH - TOP_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 0 }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
-		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, 0 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), THICKNESS);
-		drawQuad(SPoint{ LEFT_MARGIN, TOP_MARGIN, 0 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), THICKNESS);
+		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, Z }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
+		drawQuad(SPoint{ CANVAS_WIDTH - TOP_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, Z }, THICKNESS, CANVAS_HEIGHT - (TOP_MARGIN + BOTTOM_MARGIN));
+		drawQuad(SPoint{ LEFT_MARGIN, CANVAS_HEIGHT - RIGHT_MARGIN, Z }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), THICKNESS);
+		drawQuad(SPoint{ LEFT_MARGIN, TOP_MARGIN, Z }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), THICKNESS);
 
 		// Draw lines
 		int numOfSteps = 10;
 		int step = static_cast<int>(595 / numOfSteps);
 		for (int i = 0; i < numOfSteps; i++)
 		{
-			drawQuad(SPoint{ LEFT_MARGIN, 595 - (i * step), 0 }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), 1);
+			drawQuad(SPoint{ LEFT_MARGIN, 595 - (i * step), Z }, CANVAS_WIDTH - (LEFT_MARGIN + RIGHT_MARGIN), 1);
 		}
 	}
 	void drawQuadC(SPoint anchor, int width, int height, int r, int g, int b)
